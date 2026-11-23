@@ -248,3 +248,44 @@ A strict, append-only record of everything discussed, decided, changed and plann
 ### Open questions
 
 - None new. The Step 3 questions in entry 003 remain.
+
+---
+
+## Entry 005 · 2026-11-23 · Session 3, part 3: Step 2, the data-quality list (brief task 1)
+
+**Branch:** `step-02-data-quality`, created from `step-01-data-loading` because Steps 0 and 1 were not merged yet. Merge Steps 0 and 1 first; this pull request then shows only the Step 2 changes. Not yet merged.
+
+### Discussed
+
+- Brief task 1: run the agreed checks and write the list of problems into the notebook, before changing anything.
+
+### Decided
+
+- Nothing new. The checks and the list follow the plan agreed in entry 003.
+- One small display choice: from section 2.5 on, the notebook shows full text labels, because pandas cuts labels longer than 50 characters.
+
+### Changed (file by file)
+
+- `notebooks/analysis.ipynb`: new section 2 with the six read-only checks (2.1–2.6) and the problem list built by code (2.7).
+- `NARRATIVE.md`: new part on the data-quality problems; overview, limitations and the AI tools line updated.
+- `README.md`: status "Step 2 of 4".
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+All counts come from the notebook and confirm the first look in `docs/plan.md`, section 3.
+
+- 101,766 stays × 50 columns, no date column. `encounter_id` is unique.
+- `?` appears in 7 columns (`weight` 96.9% missing), but in none of the six analysis columns.
+- 71,518 patients; 16,773 of them (23.5%) have 2 or more stays, together 47,021 stays. One patient has 40.
+- `age` holds exactly the ten brackets; `[0-10)` has 161 stays and `[10-20)` 691. `readmitted` holds only `NO`, `>30` and `<30`. `gender` has 3 `Unknown/Invalid` stays.
+- Every discharge code in the data appears in the mapping file. Death codes cover 1,652 stays, all flagged `NO`. Hospice codes cover 771 stays; 86 of them were followed by a readmission, 43 within 30 days. Unknown codes (18, 25, 26) cover 4,680 stays.
+- The first-look counts in `docs/plan.md` for the age brackets (160 and 690) were taken after removing death and hospice stays; the raw counts are 161 and 691.
+
+### Planned next
+
+- Step 3 (`step-03-readmission-function`): first the open questions (code layout, `reports/`, and the analysis choices), then agree on the unit tests, then write the function and the tests.
+
+### Open questions
+
+- The Step 3 questions listed in entry 003.

@@ -4,7 +4,7 @@ Barbaros Isik · 23 November 2026
 
 ## Overview
 
-I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). So far, the project is set up and the data load correctly.
+I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). So far, the project is set up, the data load correctly and the data-quality problems are listed.
 
 ## Resources used, and why
 
@@ -24,15 +24,26 @@ I answer one question from a hospital manager: what share of patients with diabe
   - One notebook holds the whole analysis, so it reads like a report.
 - **Output:** `data/raw/` with `data/README.md`, and `notebooks/analysis.ipynb`, which loads 101,766 rows × 50 columns and keeps `None` as a value.
 
+## Part 2: data-quality problems (brief task 1)
+
+- **Input:** the loaded data (101,766 stays × 50 columns) and the discharge table in `IDS_mapping.csv`.
+- **Process:** six read-only checks in the notebook: size and column types; missing values; stays versus patients; the allowed values of `age`, `gender` and `readmitted`; the discharge codes and their meanings; and the discharge codes against the readmission flag.
+- **Decisions and why:**
+  - Nothing in the data is changed in this part, so every problem is on record before any choice is made.
+  - The list is a table built by code, so every count is computed, not typed by hand.
+  - `age`, `gender` and `readmitted` are checked against lists of allowed values, so missing and unexpected labels are both caught.
+- **Output:** a list of nine problems (notebook section 2.7), each with the number of rows it affects and whether it affects the question. The main ones: 1,652 stays ended in death and 771 in hospice care; 4,680 stays have an unknown discharge destination; 16,773 patients have more than one stay; and the two youngest age groups are very small.
+
 ## Limitations
 
 - The data have no dates, so the order of a patient's stays and the exact 30-day window cannot be checked.
 - The readmission flag was computed by the data's authors from the full hospital database, so I have to trust it.
 - Readmissions to hospitals outside the 130 are not recorded, so the true rates are probably somewhat higher.
+- 4,680 stays have an unknown discharge destination; some of them may have ended in death.
 
 ## AI tools used
 
-- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the notebook code and prepare commit messages. I reviewed and approved every step before it was merged.
+- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the notebook code (loading and data-quality checks) and prepare commit messages. I reviewed and approved every step before it was merged.
 
 ## How to reproduce
 
