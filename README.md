@@ -6,13 +6,15 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 
 ## Status
 
-**Step 2 of 4 (data-quality list).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
+**Step 3 of 4 (function and unit tests).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
 
 ## Where to find what
 
 | File | What it is |
 |---|---|
 | [notebooks/analysis.ipynb](notebooks/analysis.ipynb) | The analysis, in one notebook (so far: loading the data and the data-quality list) |
+| [src/readmission.py](src/readmission.py) | The function `readmission_rate_by_age(df)` |
+| [tests/test_readmission.py](tests/test_readmission.py) | Two unit tests on small hand-made tables |
 | [NARRATIVE.md](NARRATIVE.md) | A short report of the work: what was done, how and why |
 | [data/README.md](data/README.md) | Source, license credit and fingerprints of the raw data |
 | [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | The research question, the data and the tasks |
@@ -36,9 +38,10 @@ python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 jupyter nbconvert --to notebook --execute --inplace notebooks/analysis.ipynb
+pytest
 ```
 
-The last line reruns the whole notebook and saves its outputs. To read it interactively instead, run `jupyter notebook notebooks/analysis.ipynb`.
+The `jupyter` line reruns the whole notebook and saves its outputs (to read it interactively instead: `jupyter notebook notebooks/analysis.ipynb`). `pytest` runs the unit tests.
 
 ## Citation
 

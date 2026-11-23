@@ -4,7 +4,7 @@ Barbaros Isik · 23 November 2026
 
 ## Overview
 
-I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). So far, the project is set up, the data load correctly and the data-quality problems are listed.
+I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). So far, the project is set up, the data load correctly, the data-quality problems are listed, and the function and its tests are written.
 
 ## Resources used, and why
 
@@ -35,6 +35,18 @@ I answer one question from a hospital manager: what share of patients with diabe
   - The death, hospice and unknown discharge codes are looked up by their labels in the mapping file, not typed by hand.
 - **Output:** a list of eight problems (notebook section 2.7), each with the number of rows it affects and whether it affects the question. The main ones: 1,652 stays ended in death and 771 in hospice care; 4,680 stays have an unknown discharge destination; and 16,773 patients have more than one stay.
 
+## Part 3: the function and its tests (brief tasks 2–3)
+
+- **Input:** the brief's definition: a table with the age bracket, the number of encounters and the 30-day readmission rate.
+- **Process:** one small function in `src/readmission.py`. It marks each stay as readmitted within 30 days (`<30`) or not, groups the stays by age bracket, then counts them and takes the share marked. Two unit tests run it on small hand-made tables.
+- **Decisions and why:**
+  - The function lives in a `.py` file, not in the notebook, so that the tests can import it; the notebook imports it too.
+  - The function does only what the brief asks. Which stays are eligible is decided in the notebook, where the codes are looked up in the mapping file.
+  - The function and its tests are one step: a function and the tests that prove it belong together. Reviewing them as one unit shows both what the code does and the evidence that it is correct, and the tests describe the expected behavior precisely.
+  - Two tests: one checks counts and rates on a table whose answer is known by hand (`>30` and `NO` both count as "not readmitted within 30 days"); the other checks that the brackets come out in age order. I checked that each test fails when its rule is broken on purpose.
+  - No linter and no automatic test run on GitHub: the brief does not ask for them.
+- **Output:** `src/readmission.py` and `tests/test_readmission.py`; `pytest` passes (2 tests).
+
 ## Limitations
 
 - The data have no dates, so the order of a patient's stays and the exact 30-day window cannot be checked.
@@ -44,7 +56,7 @@ I answer one question from a hospital manager: what share of patients with diabe
 
 ## AI tools used
 
-- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the notebook code (loading and data-quality checks) and prepare commit messages. I reviewed and approved every step before it was merged.
+- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the code (notebook, function and tests) and prepare commit messages. I reviewed and approved every step before it was merged.
 
 ## How to reproduce
 
@@ -54,4 +66,5 @@ cd diabetes-readmission-analysis
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 jupyter nbconvert --to notebook --execute --inplace notebooks/analysis.ipynb
+pytest
 ```

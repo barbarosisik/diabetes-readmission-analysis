@@ -331,3 +331,40 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - None.
+
+---
+
+## Entry 007 · 2026-11-23 · Session 3, part 5: Step 3, the function and its tests (brief tasks 2–3)
+
+**Branch:** `step-03-readmission-function`, created from `step-02-data-quality` because the earlier steps were not merged yet. Merge pull requests #1–#3 first. Not yet merged.
+
+### Discussed
+
+- Nothing new; the decisions are in entry 006.
+
+### Decided
+
+- Nothing new. As decided in entry 002 (9B), the function and its tests are one step: a function and the tests that prove it belong together. Reviewing them as one unit shows both what the code does and the evidence that it is correct, and the tests describe the expected behavior precisely.
+
+### Changed (file by file)
+
+- `src/readmission.py`: `readmission_rate_by_age(df)` marks the `<30` stays, groups by age bracket, and returns the number of encounters and the 30-day readmission rate.
+- `tests/test_readmission.py`: two tests on hand-made tables: counts and rates, and age order.
+- `pytest.ini`: tells pytest that the code is in `src/`.
+- `requirements.txt`: adds pytest 9.2.0.
+- `README.md`: status "Step 3 of 4", file guide, how to run the tests.
+- `NARRATIVE.md`: new part on the function and its tests.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- `pytest`: 2 passed.
+- Each test fails when its rule is broken on purpose: counting `>30` as a 30-day readmission breaks the first test, and turning off the sorting breaks the second.
+
+### Planned next
+
+- Step 4: the results on the real data, `NOTE.md`, `RESULTS.md`, and the final README and narrative.
+
+### Open questions
+
+- None.
