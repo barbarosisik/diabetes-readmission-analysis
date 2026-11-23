@@ -1,6 +1,6 @@
 # Logbook
 
-A strict, append-only record of everything discussed, decided, changed and planned. The newest entry is at the bottom. Old entries are never edited; corrections go in a new entry that refers to the old one. The rules are in [AGENTS.md](AGENTS.md), section 5.
+A strict, append-only record of everything discussed, decided, changed and planned. The newest entry is at the bottom. Old entries are never edited; corrections go in a new entry that refers to the old one. The rules are in the "Logbook" section of [AGENTS.md](AGENTS.md).
 
 ---
 
@@ -91,3 +91,65 @@ A strict, append-only record of everything discussed, decided, changed and plann
 
 - The decisions in `plan.md`, section 6.
 - Whether commit messages should be approved before each commit, or shown at commit time with the approval given at merge time (the current rule).
+
+---
+
+## Entry 002 · 2026-11-23 · Session 2: general decisions, new working rules and authorship
+
+**Branch:** `step-00-project-setup`. Not yet merged.
+
+### Discussed
+
+- The project owner created the GitHub repository, and `main` and `step-00-project-setup` were pushed to it.
+- Eleven general decisions (tools, shape of the work, way of working) were presented, each with options and a recommendation.
+- The project owner asked for four new working rules:
+  - always present decisions before acting on them
+  - always choose the simplest solution
+  - the project owner is the only author
+  - keep a narrative document of the work
+- The narrative document is modelled on an earlier report by the project owner: overview, resources and why, one section per step, limitations, tools used, how to reproduce.
+
+### Decided
+
+- **1A:** Python, pandas and pytest.
+- **2A:** `requirements.txt` with exact versions, plus Python's built-in `venv`.
+- **3A:** type hints, short docstrings, `ruff`, and an automatic test run on every push, all kept simple. The unit tests themselves will be discussed before any are written.
+- **4:** code modules with Markdown reports, and also a notebook. The exact form is to be confirmed.
+- **5B:** commit the two raw CSV files to the repository. Their licence (CC BY 4.0) allows this with credit.
+- **6A:** strictly the four tasks. Extras only if time is left, and only after approval. Never a predictive model.
+- **7A:** commit generated outputs, marked as generated.
+- **8:** folder structure to be confirmed. The project owner prefers subfolders.
+- **9B:** the function and its unit tests form one step, giving six steps in total.
+  - **Reason:** a function and the tests that prove it belong together. Reviewing them as one unit shows both what the code does and the evidence that it is correct. The tests also work as a precise description of the expected behaviour.
+- **10A:** each commit message is shown first, then committed and pushed to the step branch. The project owner's approval comes before merging into `main`.
+- **11A:** one pull request per step, merged with a merge commit.
+
+### Changed
+
+- **History:** re-authored the two existing commits so that the project owner is the only author and committer, removed extra trailer lines from their messages, and force-pushed both branches. GitHub now attributes both commits to the project owner's account.
+- **Git settings:** set the repository's local git identity to the project owner and turned commit signing off.
+- `AGENTS.md`:
+  - new sections "Ask first, keep it simple", "Authorship" and "Narrative"
+  - the data rule now says the raw data are committed unchanged
+  - sections renumbered
+- `LOGBOOK.md`: this entry; the header now refers to the "Logbook" section by name.
+
+### Found
+
+- After the history rewrite, GitHub's Contributors box on the repository page still showed the previous author. It is a stored summary that GitHub did not rebuild, even after the default branch was switched away and back.
+
+### Planned next
+
+1. The project owner deletes and re-creates the GitHub repository (empty, same name). Both branches are then pushed again from the clean local copy, and the Contributors box is checked.
+2. The project owner answers the open questions below.
+3. Update `plan.md` and the other documents with all decisions, create the narrative document, and record this in the next logbook entry.
+
+### Open questions
+
+1. **Folder structure (decision 8):** subfolders (`docs/`, `data/`, `notebooks/`, `src/`, `tests/`, `reports/`), or everything at the top level?
+2. **Notebook (decision 4):** one notebook that walks through the analysis by calling the same functions?
+3. **Data (decision 5B):** drop the download script and commit the CSV files with a `data/README.md`?
+4. **Scope (decision 6A):** move the 95% intervals, per-patient check, paper cross-check and chart to a "maybe later" list?
+5. **Spelling:** American English throughout?
+6. **Tool mentions:** keep `CLAUDE.md` and make the other mentions of tooling neutral, or remove them all?
+7. **Narrative:** file name, structure, format and the tools section.
