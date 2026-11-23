@@ -1,0 +1,22 @@
+# Data: downloaded by script, never committed
+data/raw/
+data/interim/
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Operating system and editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local assistant settings (personal, not shared)
+.claude/settings.local.json
