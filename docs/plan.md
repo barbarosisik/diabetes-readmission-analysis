@@ -50,7 +50,7 @@ The manager asks for the share of *patients*, but the function must report the "
 | **C** | Each patient once, using their first stay (lowest `encounter_id`), after removing death and hospice | **9.0%** of 69,990 patients |
 | **D** | Each patient once: "had at least one stay followed by a readmission within 30 days" | 12.6% of 69,990 patients |
 
-**Proposed** (confirmed in Step 3): the function reports **B**, one row per stay. That is what the brief asks for ("number of encounters"), and it is how hospitals usually measure readmissions. C and D are shown here only to explain why the counting unit matters; they are not part of the analysis.
+**Decided:** the function reports **B**, one row per stay. That is what the brief asks for ("number of encounters"), and it is how hospitals usually measure readmissions. C and D are shown here only to explain why the counting unit matters; they are not part of the analysis.
 
 ### 1.3 Why the choice matters: the age pattern changes
 
@@ -107,7 +107,7 @@ None of these six columns contains the missing-value marker `?`.
 
 ### 2.2 Discharge codes that matter
 
-| Code | Meaning (from `IDS_mapping.csv`) | Stays | Proposed (decided in Step 3) |
+| Code | Meaning (from `IDS_mapping.csv`) | Stays | Decision |
 |---|---|---|---|
 | 11 | Expired (the patient died) | 1,642 | exclude |
 | 19 | Expired at home. Medicaid only, hospice. | 8 | exclude |
@@ -128,7 +128,7 @@ None of these six columns contains the missing-value marker `?`.
 
 Step 2 will produce the formal, code-generated version of this list. Problems marked ✱ affect our question.
 
-| # | Problem | How big | Proposed handling |
+| # | Problem | How big | Handling |
 |---|---|---|---|
 | 1 ✱ | Missing values are written as the text `?` | 7 columns: `weight` 96.9%, `medical_specialty` 49.1%, `payer_code` 39.6%, `race` 2.2%, `diag_3` 1.4%, `diag_2` 0.35%, `diag_1` 0.02%. None in our six columns. | Load `?` as missing |
 | 2 ✱ | **Loading trap:** pandas' default settings treat the text `None` as missing, but here `None` is a real answer ("test not done") | `max_glu_serum`: 96,420 rows; `A1Cresult`: 84,748 rows | Load with `na_values="?", keep_default_na=False` |
@@ -172,26 +172,23 @@ Only the four tasks in the brief, about 60–90 minutes of focused work for the 
 | Topic | Decision |
 |---|---|
 | Language and tools | Python, pandas and pytest. `requirements.txt` with exact versions, and Python's built-in `venv` |
-| Code quality | Type hints, short docstrings, `ruff`, and one small GitHub Actions workflow that runs pytest (Step 3) |
+| Code quality | Type hints and a short docstring. No linter and no automatic test run: the brief does not ask for them |
 | Presentation | One Jupyter notebook, `notebooks/analysis.ipynb`, holds the whole analysis |
 | Raw data | The two CSV files are committed unchanged to `data/raw/`, with `data/README.md` (source, CC BY 4.0 credit, SHA-256 fingerprints). No download script |
-| Generated outputs | Committed, and marked as generated |
+| Outputs | Shown in the notebook, which is committed with its outputs. No `reports/` folder |
 | Steps | Five steps (0–4), listed in section 5 |
 | Way of working | One branch and one pull request per step. Each commit message is shown first, then committed and pushed. The project owner merges with a merge commit |
 | Spelling | American English (old logbook entries stay as written) |
 | Narrative | `NARRATIVE.md` at the top level; the rules are in AGENTS.md, section 8 |
 | Data-quality list | Built by a code cell in the notebook, so every count is computed, never typed by hand |
+| Nothing hard-coded | Values come from the data: the discharge codes are looked up by their labels in `IDS_mapping.csv`. Numbers in the documents are copied from the notebook's outputs |
+| Counting unit | Per stay (encounter), as the brief asks |
+| Exclusions | Stays that ended in death or hospice care, because those patients cannot or are not expected to come back. Unknown discharge codes and `Unknown/Invalid` gender are kept and listed. The exclusion is done in the notebook, before the function is called |
+| Code layout | The function in `src/readmission.py`, imported by the notebook and the tests |
+| Unit tests | Two: counts and rates on a hand-made table (`>30` and `NO` both count as not readmitted within 30 days), and age order |
+| Results file | `RESULTS.md`: the findings, task by task, kept very simple |
 
 **Why the function and its tests form one step:** a function and the tests that prove it belong together. Reviewing them as one unit shows both what the code does and the evidence that it is correct, and the tests describe the expected behavior precisely.
-
-### 4.3 Still open, asked at the step where they come up
-
-- **Step 3, code layout:** pytest needs to import the function. Recommendation: keep it in one small `.py` file in `src/` that the notebook imports. Also: is `reports/` still needed, since the notebook holds the outputs?
-- **Step 3, analysis choices.** Recommendations:
-  - count per stay, as the brief says
-  - exclude discharge codes for death (11, 19, 20, 21) and hospice (13, 14)
-  - keep the unknown discharge codes (18, 25, 26) and the `Unknown/Invalid` gender, but list them as problems
-  - keep all ten age brackets, as the brief asks, and flag the small ones in the note
 
 ---
 
@@ -230,16 +227,16 @@ Each step has its own branch and pull request, reviewed and merged by the projec
 
 ### Step 3: The function and its tests (brief tasks 2–3) · branch `step-03-readmission-function`
 
-- `readmission_rate_by_age(df)` returns a table with the age bracket, the number of encounters and the 30-day readmission rate.
-- 2–3 pytest unit tests on small hand-made data frames, agreed with the project owner before they are written.
-- Type hints, short docstrings, `ruff`, and one small GitHub Actions workflow that runs pytest.
-- **Done when:** the tests pass, locally and on GitHub.
+- `src/readmission.py`: `readmission_rate_by_age(df)` returns a table with the age bracket, the number of encounters and the 30-day readmission rate.
+- `tests/test_readmission.py`: the two unit tests in section 4.2, on small hand-made data frames.
+- **Done when:** `pytest` passes.
 
 ### Step 4: Results, note and final documents (brief task 4) · branch `step-04-results`
 
-- Run the function on the real data in the notebook.
+- Notebook section 3: exclude the death and hospice stays, then run the function on the real data.
 - `NOTE.md`, under half a page: the assumptions, what was excluded and why, and what to ask the data owner.
-- The final `README.md` (how to run, headline result) and `NARRATIVE.md`.
+- `RESULTS.md`: the findings, task by task.
+- The final `README.md` and `NARRATIVE.md`.
 - **Done when:** every task in `docs/PROJECT_BRIEF.md` is done, and the notebook reruns from a fresh clone.
 
 ---
@@ -248,15 +245,15 @@ Each step has its own branch and pull request, reviewed and merged by the projec
 
 ```text
 diabetes-readmission-analysis/
-├── README.md, NOTE.md, NARRATIVE.md
+├── README.md, RESULTS.md, NOTE.md, NARRATIVE.md
 ├── AGENTS.md, CLAUDE.md   working rules
 ├── requirements.txt       Python packages
+├── pytest.ini             tells pytest where the code is
 ├── data/                  README.md + raw/ (the two CSV files)
 ├── docs/                  PROJECT_BRIEF.md, plan.md, LOGBOOK.md, GLOSSARY.md
 ├── notebooks/             analysis.ipynb
-├── src/                   code
-├── tests/                 unit tests
-└── reports/               generated outputs
+├── src/                   readmission.py
+└── tests/                 test_readmission.py
 ```
 
 ---

@@ -32,7 +32,8 @@ I answer one question from a hospital manager: what share of patients with diabe
   - Nothing in the data is changed in this part, so every problem is on record before any choice is made.
   - The list is a table built by code, so every count is computed, not typed by hand.
   - `age`, `gender` and `readmitted` are checked against lists of allowed values, so missing and unexpected labels are both caught.
-- **Output:** a list of nine problems (notebook section 2.7), each with the number of rows it affects and whether it affects the question. The main ones: 1,652 stays ended in death and 771 in hospice care; 4,680 stays have an unknown discharge destination; 16,773 patients have more than one stay; and the two youngest age groups are very small.
+  - The death, hospice and unknown discharge codes are looked up by their labels in the mapping file, not typed by hand.
+- **Output:** a list of eight problems (notebook section 2.7), each with the number of rows it affects and whether it affects the question. The main ones: 1,652 stays ended in death and 771 in hospice care; 4,680 stays have an unknown discharge destination; and 16,773 patients have more than one stay.
 
 ## Limitations
 

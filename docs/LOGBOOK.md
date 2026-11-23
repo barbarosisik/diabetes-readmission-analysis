@@ -289,3 +289,45 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - The Step 3 questions listed in entry 003.
+
+---
+
+## Entry 006 · 2026-11-23 · Session 3, part 4: final decisions and a fix to Step 2
+
+**Branch:** `step-02-data-quality` (pull request #3). Not yet merged.
+
+### Discussed
+
+- The project owner asked for as little code as possible, nothing hard-coded, nothing done without a reason, few words, and only what the brief asks. Every step must be explainable.
+- The deliverables: what is produced for each task, and where it is shown.
+- The project owner asked for one very simple results file with the findings, task by task.
+
+### Decided
+
+- **Exclusions:** stays that ended in death or hospice care are excluded, because those patients cannot come back, or are not expected to. Stays with an unknown discharge destination and the `Unknown/Invalid` gender stays are kept and listed as problems. This is written in the results file, the note and the narrative.
+- **Where:** the exclusion is done in the notebook, before the function is called, so the function does exactly what the brief asks.
+- **Nothing hard-coded:** the death, hospice and unknown discharge codes are looked up by their labels in `IDS_mapping.csv`. Numbers in the documents are copied from the notebook's outputs.
+- **Counting unit:** per stay.
+- **Dropped:** `reports/`, `ruff` and the GitHub Actions test run, because the brief does not ask for them. Type hints and a short docstring stay.
+- **Unit tests:** two: counts and rates on a hand-made table, and age order.
+- **Results file:** `RESULTS.md` at the top level.
+- **Small age groups:** removed from the data-quality list. They are a sample-size warning, not a data problem, and flagging them needed a hand-picked cut-off. The note mentions them, using the counts from the results table.
+
+### Changed (file by file)
+
+- `notebooks/analysis.ipynb`: the discharge codes are looked up by label; the small-age-groups row is removed (eight problems); the closing sentence points to section 3.
+- `docs/plan.md`: decisions table updated, open questions removed, Steps 3–4 and the folder structure match the decisions.
+- `NARRATIVE.md`: part 2 updated (eight problems; codes looked up by label).
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Looking the codes up by label gives the same codes as before: death 11, 19, 20, 21; hospice 13, 14; unknown 18, 25, 26.
+
+### Planned next
+
+- Step 3: the function and the two tests. Step 4: the results, the note, the results file, the README and the narrative.
+
+### Open questions
+
+- None.
