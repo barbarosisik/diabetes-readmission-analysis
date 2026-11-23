@@ -2,27 +2,27 @@
 
 **How often are hospital patients with diabetes readmitted within 30 days of leaving hospital, and how does that differ by age group?**
 
-This repository analyses the public UCI dataset *Diabetes 130-US hospitals for years 1999–2008*: 101,766 hospital stays from 130 US hospitals.
+This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for years 1999–2008*: 101,766 hospital stays from 130 US hospitals.
 
 ## Status
 
-**Step 0 of 6 (project set-up).** See [plan.md](plan.md) for the full plan and [LOGBOOK.md](LOGBOOK.md) for progress.
+**Step 0 of 4 (project set-up).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
 
 ## Where to find what
 
 | File | What it is |
 |---|---|
-| [PROJECT_BRIEF.md](PROJECT_BRIEF.md) | The research question, the data and the tasks |
-| [plan.md](plan.md) | What the question really asks, what the data look like, and the step-by-step plan |
+| [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | The research question, the data and the tasks |
+| [docs/plan.md](docs/plan.md) | What the question really asks, what the data look like, and the step-by-step plan |
 | [AGENTS.md](AGENTS.md) | Working rules: branches, commit messages, explanations, data handling |
-| [GLOSSARY.md](GLOSSARY.md) | Medical, hospital and data terms in plain words |
-| [LOGBOOK.md](LOGBOOK.md) | Strict record of everything discussed, decided and changed |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md) | Medical, hospital and data terms in plain words |
+| [docs/LOGBOOK.md](docs/LOGBOOK.md) | Strict record of everything discussed, decided and changed |
 
 ## Data
 
-The data are **not** stored in this repository. They come from the UCI Machine Learning Repository under the CC BY 4.0 licence:
+The data come from the UCI Machine Learning Repository under the CC BY 4.0 license:
 <https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008>.
-A download script with file-fingerprint checks will be added in Step 1.
+The two raw files will be committed unchanged to `data/raw/` in Step 1, with their source, license credit and SHA-256 fingerprints in `data/README.md`.
 
 ## How to run
 

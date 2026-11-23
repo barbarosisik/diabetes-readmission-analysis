@@ -11,7 +11,7 @@ Medical, hospital and data terms used in this project, each explained in plain w
 | **Pancreas** | An organ behind the stomach that makes insulin. |
 | **Insulin** | A hormone made by the pancreas. It lets the body's cells take sugar out of the blood and use it for energy. Without insulin, sugar builds up in the blood. |
 | **Diabetes (diabetes mellitus)** | A long-term condition in which blood sugar stays too high, either because the body makes too little insulin or because it does not respond to insulin properly. |
-| **Type 1 diabetes** | The body's own defence (immune) system destroys the insulin-making cells, so the body makes little or no insulin. It usually starts in childhood or young adulthood, and patients need insulin injections for life. |
+| **Type 1 diabetes** | The body's own defense (immune) system destroys the insulin-making cells, so the body makes little or no insulin. It usually starts in childhood or young adulthood, and patients need insulin injections for life. |
 | **Type 2 diabetes** | The body makes insulin but responds to it poorly, and over time may not make enough. It usually starts in adulthood and is linked to weight and lifestyle. About 90–95% of people with diabetes have type 2. |
 | **Diabetic ketoacidosis (DKA)** | A life-threatening emergency, mostly in type 1 diabetes. Without enough insulin, cells cannot use sugar, so the body burns fat instead. That produces acids (ketones) that build up in the blood. It needs hospital treatment and can come back if insulin doses are missed. Its ICD-9 code is `250.1x`. |
 | **Glycemic control** | How well blood sugar is kept within a healthy range. |
@@ -41,7 +41,7 @@ Medical, hospital and data terms used in this project, each explained in plain w
 | **Readmission** | Being admitted to hospital again after a discharge. |
 | **30-day readmission** | A readmission within 30 days of discharge. It is a standard measure of care quality, because many of these returns are avoidable. |
 | **Index stay (index admission)** | The stay from which the 30 days are counted. |
-| **Hospital Readmissions Reduction Program (HRRP)** | A US programme, started in 2012, that cuts payments to hospitals with more 30-day readmissions than expected. It is why hospital managers care about this number. (Our data, 1999–2008, are from before it existed.) |
+| **Hospital Readmissions Reduction Program (HRRP)** | A US program, started in 2012, that cuts payments to hospitals with more 30-day readmissions than expected. It is why hospital managers care about this number. (Our data, 1999–2008, are from before it existed.) |
 | **Expired** | Hospital wording for "the patient died". Codes 11, 19, 20 and 21. |
 | **Hospice** | Care for people expected to live only a few months, aimed at comfort rather than cure, given at home (code 13) or in a facility (code 14). Patients rarely return to hospital, but they can leave hospice and come back. |
 | **SNF (skilled nursing facility)** | A care home with nurses and therapists, often used to recover after a hospital stay (code 3). |
@@ -58,9 +58,9 @@ Medical, hospital and data terms used in this project, each explained in plain w
 | **Lab procedure** | A laboratory test, usually on blood or urine (column `num_lab_procedures`). |
 | **Procedure** | A medical action other than a lab test, e.g. a scan or an operation (column `num_procedures`). |
 | **Diagnosis** | The doctor's conclusion about what illness or condition the patient has. |
-| **Payer** | Whoever pays the hospital bill: an insurer, a government programme or the patient (column `payer_code`). |
+| **Payer** | Whoever pays the hospital bill: an insurer, a government program or the patient (column `payer_code`). |
 | **Medicare / Medicaid** | US public health insurance. Medicare is mainly for people aged 65 and over (code `MC`); Medicaid is for people with low incomes (code `MD`). |
-| **Integrated delivery network** | A group of hospitals, clinics and doctors run as one organisation. |
+| **Integrated delivery network** | A group of hospitals, clinics and doctors run as one organization. |
 
 ## Data and coding
 

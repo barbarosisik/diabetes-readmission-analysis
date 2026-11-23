@@ -1,6 +1,6 @@
 # Logbook
 
-A strict, append-only record of everything discussed, decided, changed and planned. The newest entry is at the bottom. Old entries are never edited; corrections go in a new entry that refers to the old one. The rules are in the "Logbook" section of [AGENTS.md](AGENTS.md).
+A strict, append-only record of everything discussed, decided, changed and planned. The newest entry is at the bottom. Old entries are never edited; corrections go in a new entry that refers to the old one. The rules are in the "Logbook" section of [AGENTS.md](../AGENTS.md).
 
 ---
 
@@ -153,3 +153,58 @@ A strict, append-only record of everything discussed, decided, changed and plann
 5. **Spelling:** American English throughout?
 6. **Tool mentions:** keep `CLAUDE.md` and make the other mentions of tooling neutral, or remove them all?
 7. **Narrative:** file name, structure, format and the tools section.
+
+---
+
+## Entry 003 · 2026-11-23 · Session 3, part 1: Step 0 finished
+
+**Branch:** `step-00-project-setup`. Not yet merged.
+
+### Discussed
+
+- The GitHub repository was deleted and re-created (empty, same name), because GitHub's Contributors box kept showing a previous author after the history rewrite in entry 002. Both branches were then pushed again from the clean local copy.
+- The open questions from entry 002 were answered (below).
+- The plan for brief task 1 (how to load the data and which checks to run) was presented and agreed.
+
+### Decided
+
+- **Answers to entry 002's open questions:**
+  1. **Folder structure:** subfolders. `README.md`, `NOTE.md`, `NARRATIVE.md`, `AGENTS.md`, `CLAUDE.md` and `requirements.txt` at the top level; `data/` (README plus `raw/`), `docs/` (brief, plan, logbook, glossary), `notebooks/`, `src/`, `tests/` and `reports/`.
+  2. **Notebook:** one notebook, `notebooks/analysis.ipynb`, holds the whole analysis. Two points stay open until Step 3: whether the function lives in one small `.py` file in `src/` that the notebook imports (recommended, so pytest can import it), and whether `reports/` is still needed.
+  3. **Data:** the two CSV files are committed unchanged to `data/raw/`, with `data/README.md` (source, CC BY 4.0 credit, SHA-256 fingerprints). No download script. This happens in Step 1.
+  4. **Scope:** only what the brief asks. No 95% intervals, no per-patient check, no cross-check with the paper, no chart and no "maybe later" list.
+  5. **Spelling:** American English everywhere, except old logbook entries, which are append-only.
+  6. **Tool mentions:** `CLAUDE.md` and every mention of AI tooling stay exactly as they are. AI assistance is allowed.
+  7. **Narrative:** `NARRATIVE.md` at the top level, short, written after finishing a piece of work rather than after every step. The first version comes after Step 1. Its structure is in `AGENTS.md`, section 8.
+- **Steps:** five steps (0–4) replace the six of entry 002. Decision 9B still holds: the function and its unit tests form one step, because a function and the tests that prove it belong together. Reviewing them as one unit shows both what the code does and the evidence that it is correct, and the tests describe the expected behavior precisely.
+- **Brief task 1:**
+  - Load with `pd.read_csv(path, na_values="?", keep_default_na=False)`, so `?` becomes missing and the real value `None` stays a value.
+  - Six read-only checks, listed under Step 2 in `docs/plan.md`.
+  - `age`, `gender` and `readmitted` are checked with `value_counts(dropna=False)` and a list of allowed values, so missing and unexpected labels are both flagged (the project owner's suggestion).
+  - The problem list is a small table built by code (option A), because `AGENTS.md` requires every reported number to come from code, never typed by hand.
+- **Raw data:** committed in Step 1, as planned.
+
+### Changed (file by file)
+
+- `docs/PROJECT_BRIEF.md`, `docs/plan.md`, `docs/LOGBOOK.md`, `docs/GLOSSARY.md`: moved from the top level into `docs/` with `git mv`, so their history is kept.
+- `docs/plan.md`: rewritten from section 4 on (scope and decisions, five steps, folder structure). Sections 1–3 are kept; the per-patient check, the 95% intervals and the mapping-file parser are no longer planned work.
+- `AGENTS.md`: new narrative rule (section 8), the 95%-interval line removed, paths updated to `docs/`, American spelling.
+- `README.md`: paths updated, status set to "Step 0 of 4", the data section now says the CSV files are committed in Step 1, American spelling.
+- `docs/PROJECT_BRIEF.md`, `docs/GLOSSARY.md`: American spelling.
+- `docs/LOGBOOK.md`: header link updated; this entry.
+
+### Found
+
+- On this machine, the official UCI zip was downloaded again. Both SHA-256 fingerprints match entry 001. The two files sit in `data/raw/`, still ignored by git until Step 1.
+- In `IDS_mapping.csv`, the discharge table is on lines 11–41, so `skiprows=10, nrows=30` reads exactly that table. Its labels that contain commas are quoted. pandas' default settings would turn code 18's label `NULL` into missing, so the mapping file is also read with `keep_default_na=False`.
+- Every line of both CSV files ends with a Windows line ending, which confirms problem 18 in `docs/plan.md`.
+
+### Planned next
+
+1. **Step 1** (`step-01-data-loading`): commit the data with `data/README.md`, add `requirements.txt`, the loading section of the notebook and the first `NARRATIVE.md`.
+2. **Step 2** (`step-02-data-quality`): the task 1 checks and the problem list.
+
+### Open questions
+
+- Step 3: the code layout (`src/` file) and whether `reports/` is needed.
+- Step 3: the analysis choices (counting unit, exclusions, gender, small age groups).
