@@ -476,3 +476,47 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - Those of entry 009, unchanged.
+
+---
+
+## Entry 011 · 2026-11-24 · Session 4, part 3: the short report
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The walk-through covered §2.5 to §3, the function and the unit tests. Each part, with the project owner's questions, is in `docs/PRESENTATION_NOTES.md`.
+- For every step, other ways of doing it were collected, run on the data or on small tables, and compared with ours (notes, section 13).
+- The project owner asked for the deliverables: a short report that explains only the choices that had a strong alternative, a PDF of the alternatives for their own use, and the best way to deliver the unit tests.
+
+### Decided
+
+- Problem 1's row count (100,723) stays as it is: it is correct, and its row already says that none of the missing values are in the six analysis columns (open question 1 of entry 009).
+- The short report is `NARRATIVE.md`, which `AGENTS.md` section 8 already defines as the short report of the work. It is rewritten to be short and to explain only the choices that had a real alternative.
+- The PDF of the alternatives is kept in `private/`, which git ignores.
+
+### Changed (file by file)
+
+- `NARRATIVE.md`: rewritten as a short report (from 1,214 to 865 words): the approach, the choices that had a real alternative, and the limitations. The "AI tools used" and "How to reproduce" sections are unchanged.
+- `README.md`: the status line and the file guide point to the short report.
+- `.gitignore`: ignores `private/`, for the project owner's own files.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Every alternative tried gave the same numbers as ours, or lost information. For example, pandas' default settings would turn the `None` values ("test not done") into missing: 84,748 of them in `A1Cresult`, as counted in notebook §1.
+- Apart from `?`, the only word in `diabetic_data.csv` that pandas reads as missing by default is `None`, and the file has no empty fields (checked with throw-away code).
+- On GitHub the repository is private, and `main` holds only the first README. All the work is on the step branches (pull requests #1–#5 and this branch).
+
+### Planned next
+
+- The project owner reviews the short report and answers the open questions below.
+- Then, on this branch: the corrections (next entry) and the chosen way to deliver the unit tests.
+- A presentation speech for the notebook and the code, given before the questions.
+- Before sharing: open the pull request for this branch, merge pull requests #1–#5 and this one into `main`, give the readers access to the repository (or send a copy), and remove `docs/PRESENTATION_NOTES.md`.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- Problem 3's count in §2.7: use `stays_per_patient[repeat].sum()` (the same 47,021, already printed in §2.3) instead of the longer expression?
+- How to deliver the unit tests: as now (the test file and `pytest`), also with a last notebook cell that runs them, or with an automatic run on GitHub?
