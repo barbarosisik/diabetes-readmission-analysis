@@ -627,4 +627,22 @@ Strack, B., DeShazo, J. P., Gennings, C., Olmo, J. L., Ventura, S., Cios, K. J.,
 **The general rule:**
 > "I always tried to do with less code, so I always went for the least code approach for most of the cases."
 
-**To do, to finalize:** a presentation speech for the notebook and the code, given before the questions. It uses the lines above.
+**Done:** the presentation speech for the notebook and the code is section 15.
+
+---
+
+## 15. The speech: the notebook and the code (about 3 minutes)
+
+My question: what share of patients come back to hospital within 30 days, and does it differ by age? I used the UCI file from the brief: 101,766 hospital stays from 130 US hospitals. I always tried to do it with less code, so in most cases I went for the least-code approach that keeps the data correct.
+
+Everything runs in one notebook, top to bottom. The function sits in its own file, so the notebook and the unit tests share exactly the same code.
+
+**Loading.** Missing values are written as a question mark, and only that is read as missing. pandas' default settings would also turn the word "None" into missing, but here "None" means "test not done", for 84,748 A1C results.
+
+**Checks, before changing anything.** Six read-only checks. None of my six columns has a missing value. 71,518 patients make the 101,766 stays, so stays are not patients. Three stays have an unknown gender. For a one-time analysis I wrote the checks out; if this data arrived every month, I'd put the same rules in a data contract, so the pipeline stops when the data changes.
+
+**Discharge codes.** I didn't type the death and hospice codes. Typing is shorter, and many public analyses do it, but typed lists slip easily, so I read the codes from the mapping file by their labels. Then I tested the brief's claim that these patients can never come back: all 1,652 death stays are marked "NO", but 43 hospice stays came back within 30 days, and many stays with an unknown destination came back too. All of this ends in a table of eight problems, built by code.
+
+**The analysis.** The only change to the data: I remove the 2,423 death and hospice stays, as the brief says and the original paper did, and keep the unknown destinations, since many of those patients were clearly alive. The function marks each stay as back within 30 days or not, groups by age, then counts and averages. The choice that matters most: I count stays, not patients, because the brief asks for the number of encounters, and without dates I can't tell which of a patient's stays came first. Two unit tests on hand-made tables check the counting rule and the age order; both pass.
+
+**Result.** 11.4% of stays, about one in nine, are followed by a readmission within 30 days. It's lowest under 20, highest at 20 to 30 with 14.3%, and between 9.8% and 12.6% everywhere else. The youngest groups are small, and these are patterns, not causes. My note lists the assumptions and what I'd ask the data owner first: how the readmission flag was built, and whether we can get dates.
