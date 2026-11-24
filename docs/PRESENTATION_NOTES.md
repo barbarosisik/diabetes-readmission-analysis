@@ -265,3 +265,37 @@ The 10 and 30 come from looking at the file. The file never changes (its fingerp
 **Why:** the brief says some codes mean death or hospice and "the exact codes must be checked in the mapping file". Looking them up by label means no code number is typed by hand: the code reads the meaning from the file.
 
 > "The discharge code says where the patient went after the stay. I read each code's meaning from the mapping file and picked out the death, hospice and unknown codes by their labels, not by typing numbers: 1,652 stays ended in death, 771 in hospice care, and 4,680 have an unknown destination."
+
+---
+
+## 8. Notebook §2.6: can those patients come back?
+
+**What does the code do, line by line?**
+1. `outcome = pd.crosstab(df["discharge_disposition_id"], df["readmitted"])`: counts the stays for each pair of discharge code and `readmitted` value. One row per code used in the data (26), one column each for `<30`, `>30` and `NO`.
+2. `outcome.reindex(DEATH + HOSPICE + UNKNOWN, fill_value=0)`: keeps only the 9 codes from §2.5, in that order. Codes 21 and 26 have no stays, so they are not in the crosstab; `fill_value=0` adds them as rows of zeros.
+
+**Why this way?**
+- `crosstab`: one line gives all three outcomes for every code.
+- `reindex`: uses the code lists from §2.5, so no code is typed by hand. `.loc` would stop with an error on codes 21 and 26.
+
+**Result:**
+
+| Code | Meaning | <30 | >30 | NO |
+|---|---|---|---|---|
+| 11 | Expired | 0 | 0 | 1,642 |
+| 19 | Expired at home | 0 | 0 | 8 |
+| 20 | Expired in a medical facility | 0 | 0 | 2 |
+| 21 | Expired, place unknown | 0 | 0 | 0 |
+| 13 | Hospice / home | 19 | 36 | 344 |
+| 14 | Hospice / medical facility | 24 | 7 | 341 |
+| 18 | NULL | 459 | 1,027 | 2,205 |
+| 25 | Not Mapped | 92 | 376 | 521 |
+| 26 | Unknown/Invalid | 0 | 0 | 0 |
+
+- Death: every stay is `NO`, as it must be, so the flag is consistent.
+- Hospice: 86 of 771 came back (19 + 36 + 24 + 7), 43 within 30 days (19 + 24). Patients can leave hospice care.
+- Unknown: 1,954 of 4,680 came back (459 + 1,027 + 92 + 376), so at least those patients were alive. The other 2,726 are `NO`: alive or dead, we can't tell.
+
+**Why:** the brief says these patients "could never be readmitted". This checks that against the data: true for death, not quite true for hospice, and not true for many unknown-destination stays.
+
+> "All death stays are marked NO, as they should be. Hospice patients did sometimes come back: 86 of 771, 43 within 30 days. And at least 1,954 of the 4,680 unknown-destination stays were followed by a return, so many of those patients were alive."
