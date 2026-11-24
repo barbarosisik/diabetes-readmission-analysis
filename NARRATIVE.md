@@ -57,7 +57,7 @@ For a one-time analysis I wrote the checks out. If this data arrived every month
 
 ## AI tools used
 
-- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the code (notebook, function and tests), draft the note and the results file, and prepare commit messages. I reviewed and approved every step before it was merged.
+- **Claude Code** (an AI coding assistant), my pair programmer: it proposed options, drafted code and text from my instructions, and helped check the data and prepare commit messages. I directed the work, made every decision and reviewed every line before it was merged.
 
 ## How to reproduce
 

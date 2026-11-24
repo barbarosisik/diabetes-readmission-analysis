@@ -520,3 +520,38 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 - Open questions 2–8 of entry 009.
 - Problem 3's count in §2.7: use `stays_per_patient[repeat].sum()` (the same 47,021, already printed in §2.3) instead of the longer expression?
 - How to deliver the unit tests: as now (the test file and `pytest`), also with a last notebook cell that runs them, or with an automatic run on GitHub?
+
+---
+
+## Entry 012 · 2026-11-24 · Session 4, part 4: the AI tools wording and the speech
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The readers want to see the project owner's own way of working. Outside ideas are fine, as long as the work is not copied as a whole.
+
+### Decided
+
+- The "AI tools used" section of `NARRATIVE.md` now says who did what: the assistant proposed options and drafted code and text; the project owner directed the work, made every decision and reviewed every line. For this section, this replaces entry 003's rule that mentions of AI tooling stay exactly as they are.
+- Problem 3's count in §2.7 stays as it is: there is no reason to change working code.
+- The phrase "as many public analyses do" in the short report stays.
+- The presentation speech for the notebook and the code is a full but brief speech, kept in `docs/PRESENTATION_NOTES.md`.
+
+### Changed (file by file)
+
+- `NARRATIVE.md`: the "AI tools used" section reworded.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Nothing new.
+
+### Planned next
+
+- The open questions below, then the corrections on this branch (next entry), the pull request for this branch, merging pull requests #1–#5 and this one into `main`, and giving the readers access.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- How to deliver the unit tests (entry 011).
