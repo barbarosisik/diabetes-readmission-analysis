@@ -443,3 +443,25 @@ Output:
 **Why:** it returns exactly the three columns the brief asks for: age bracket, number of encounters and 30-day readmission rate.
 
 > "The function marks each stay as 'back within 30 days' or not, groups the stays by age bracket, and gives for each group the number of stays and the share that came back within 30 days."
+
+---
+
+## 12. The unit tests: `tests/test_readmission.py`
+
+**What is a unit test?** A small piece of code that runs the function on a tiny hand-made table, where we know the right answer, and checks that the function gives that answer. `pytest` runs every function whose name starts with `test_`.
+
+**Test 1: counts and rates**
+- A table of 5 stays: [0-10) with `<30`, `NO`; [50-60) with `<30`, `>30`, `NO`.
+- The answer worked out by hand: [0-10) has 2 stays, 1 back within 30 days → 1/2. [50-60) has 3 stays, 1 back within 30 days → 1/3.
+- `pd.testing.assert_frame_equal(...)`: checks that the function's table equals that answer exactly: column names, numbers, types and order.
+- It proves that `>30` and `NO` count as stays, but not as 30-day returns.
+
+**Test 2: age order**
+- 3 stays given in the wrong order: [90-100), [0-10), [10-20).
+- `assert ... == ["[0-10)", "[10-20)", "[90-100)"]`: checks that the function puts them in age order. `assert` means "this must be true, or the test fails".
+
+**Why two are enough:** the brief asks for 2–3. Test 1 covers the counting rule and the numbers; test 2 covers the order. Each test was checked to fail when its rule is broken on purpose (logbook entry 007).
+
+**Result:** `pytest`: 2 passed.
+
+> "I wrote two unit tests on tiny hand-made tables where I know the answer. One checks the counts and rates, including that '>30' and 'NO' don't count as 30-day returns; the other checks that the age groups come out in age order. Both pass."
