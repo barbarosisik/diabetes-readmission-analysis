@@ -555,3 +555,37 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 
 - Open questions 2–8 of entry 009.
 - How to deliver the unit tests (entry 011).
+
+---
+
+## Entry 013 · 2026-11-24 · Session 4, part 5: everything merged into `main`
+
+**Branch:** `step-05-revisions`, then merged into `main` together with pull requests #1–#5.
+
+### Discussed
+
+- The project owner asked to merge everything into `main` and to prepare the files to send.
+
+### Decided
+
+- Pull requests #1–#5 and this branch are merged into `main` in order, each with a merge commit.
+- The files to send are the repository at `main`, without `docs/PRESENTATION_NOTES.md` (the project owner's own preparation notes).
+- The open questions below can still be applied afterwards, on a new branch.
+
+### Changed (file by file)
+
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- A fresh copy of this branch, without the presentation notes, reruns from scratch: with the pinned packages, every notebook output is identical to the committed one, and `pytest` reports 2 passed.
+
+### Planned next
+
+- The project owner sends the files.
+- The open questions below.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- How to deliver the unit tests (entry 011).
