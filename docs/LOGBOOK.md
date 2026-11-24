@@ -407,3 +407,36 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - None.
+
+---
+
+## Entry 009 · 2026-11-24 · Session 4, part 1: review walk-through and presentation notes
+
+**Branch:** `step-05-revisions`, created from `step-04-results` (which includes the project owner's notebook edit 2289ff8). Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The project owner is going through the notebook section by section (so far §1–§2.3) to be able to present it.
+
+### Decided
+
+- All revisions go on one branch, `step-05-revisions`.
+- The questions and answers are kept in `docs/PRESENTATION_NOTES.md`, to be removed before the project is shared.
+
+### Changed (file by file)
+
+- `docs/PRESENTATION_NOTES.md`: new; the questions so far, each with its simplest answer.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- `payer_code` is missing in the first 20,446 rows, not 20,445 as written in notebook §1, `data/README.md` and entry 004.
+
+### Planned next
+
+- Continue the walk-through from §2.4, collect the corrections, then make them on this branch.
+
+### Open questions
+
+- The weak spots in the data-quality list (problem 1's row count, problem 2, hospice, unknown discharge codes, codes 21 and 26, first-look problems left out, the automated review comment on `docs/plan.md`).
+- The 20,446 fix: correct the number, or drop it.
