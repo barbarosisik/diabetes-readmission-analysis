@@ -123,3 +123,47 @@ What the check gives us: no stay is recorded twice. The table counts rows as sta
 There are 101,766 stays but only 71,518 patients. The table counts stays, as the brief asks ("number of encounters"), so a patient with 40 stays counts 40 times. The patients who come back hold almost half of all stays (47,021 of 101,766).
 
 > "Each row is one hospital stay. 71,518 patients make 101,766 stays: about a quarter of the patients have more than one stay, and together they hold almost half of all stays. My table counts stays, as the brief asks."
+
+---
+
+## 5. The data-quality checks: plan and changes
+
+**The six read-only checks** (`docs/plan.md` §5, agreed in logbook entry 003):
+
+| Check | Function | Notebook |
+|---|---|---|
+| Size and column types | `df.shape`, `df.dtypes` | §2.1 |
+| Missing values (`?`) per column | `df.isna().sum()` | §2.2 |
+| One row per stay? Repeat patients? | `is_unique`, `value_counts()` | §2.3 |
+| Allowed values in `age`, `gender`, `readmitted` | `value_counts(dropna=False)`, then `isin()` | §2.4 |
+| Discharge codes and their meanings | `value_counts()` + `IDS_mapping.csv` | §2.5 |
+| Can those patients come back? | `pd.crosstab()` | §2.6 |
+
+The list of problems is built from the results (§2.7).
+
+**How it changed:**
+1. The first look found 18 problems (plan §3).
+2. The six checks gave 9.
+3. "Small age groups" was removed, because it is a sample-size warning, not a data fault, and needed a hand-picked cut-off. That left 8.
+
+**My contribution:** the allowed-values check (§2.4) was my suggestion. A list of allowed values, plus counts that include missing values, catches both missing and unexpected labels (logbook entry 003).
+
+---
+
+## 6. Notebook §2.4: allowed values
+
+**What does the code do, line by line?**
+1. `allowed = {...}`: the values we expect in each column. The ten age brackets are built by code (`range(0, 100, 10)` → `[0-10)` … `[90-100)`), not typed.
+2. `for col, values in allowed.items():`: repeats the next two steps for each of the three columns.
+3. `value_counts(dropna=False).sort_index()`: every value with its count, missing values included.
+4. `~df[col].isin(values)`: True for each value not on the list. A missing value counts as not on the list.
+5. `print(...)`: shows those values, or "none".
+
+**Result:**
+- `age` has exactly the ten brackets.
+- `readmitted` has only `NO`, `>30` and `<30`.
+- 3 stays have gender `Unknown/Invalid`.
+
+**Why:** the table groups by `age` and counts `readmitted`. A typo or missing label would create a wrong group or be counted wrongly.
+
+> "I checked that age, gender and readmitted hold only the expected values. Age has exactly the ten brackets, readmitted only NO, >30 and <30, and 3 stays have gender Unknown/Invalid."
