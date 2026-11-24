@@ -465,3 +465,129 @@ Output:
 **Result:** `pytest`: 2 passed.
 
 > "I wrote two unit tests on tiny hand-made tables where I know the answer. One checks the counts and rates, including that '>30' and 'NO' don't count as 30-day returns; the other checks that the age groups come out in age order. Both pass."
+
+---
+
+## 13. Why these approaches, and what else we could have done
+
+Every "same result" below was checked, on the real data or on small tables. Numbers marked *(quick check)* come from code outside the notebook: fine to say, not for the deliverables.
+
+**Summary**
+- Our approach is the simplest correct one almost everywhere.
+- One small switch is worth making: problem 3's count in §2.7 (see 8).
+- The original paper kept each patient's first stay, removed death and hospice stays, and counted `<30` against everything else. We do the same, except that we count every stay, because the brief asks for the "number of encounters".
+
+### 1. Loading (§1)
+**Ours:** `pd.read_csv(path, na_values="?", keep_default_na=False, low_memory=False)`: only `?` becomes missing; `None` stays "test not done".
+**Other ways:**
+- A. `pd.read_csv(path)`, then `df.replace("?", np.nan)`: the most common way online. Current pandas already turns `None` into missing when reading, so 84,748 A1C "test not done" values are lost. Older pandas did not, so the same code gives different data on different versions.
+- B. `pd.read_csv(path, na_values="?")`: one setting fewer, same loss (84,748 in `A1Cresult`, 96,420 in `max_glu_serum`).
+- C. A download package (`ucimlrepo`): no file in the repository, but it needs internet and an extra package, and we no longer control how `?` and `None` are read.
+
+**Verdict:** keep. It is the only one-line way that keeps both rules.
+
+### 2. Size and column types (§2.1)
+**Ours:** `df.shape`, `df.dtypes`: the size on one line, then the types.
+**Other ways:**
+- A. `df.info()`: one line of code; prints the size, the types and the non-missing counts (57 lines). Equally good; the non-missing counts repeat §2.2 in a harder-to-read form.
+- B. An automatic report (`ydata-profiling`, `ProfileReport(df)`): one line describes every column. An extra package, a long report, and it cannot judge what matters for our question (it doesn't know that code 11 means death).
+- C. The file's fingerprint (SHA-256): proves it is the exact official file. Already done, in `data/README.md`.
+
+**Verdict:** keep. If asked: "`df.info()` would do the same job; I wanted the size on one line."
+
+### 3. Missing values (§2.2)
+**Ours:** `df.isna().sum()`, only the columns with gaps, with percent, plus the total for our six columns (0).
+**Other ways:**
+- A. `df.isna().mean()`: the share directly, one step shorter for the percent; but we wanted the counts too.
+- B. A picture (`missingno.matrix(df)`): shows where the gaps are, e.g. that `payer_code` is empty at the start of the file. An extra package, and a picture is not a number for the list.
+- C. Per row (`df.isna().any(axis=1).sum()` = 100,723): used in §2.7. As the main view it misleads: 99% of rows look "incomplete" because of columns we never use.
+
+**Verdict:** keep.
+
+### 4. Stays and patients (§2.3)
+**Ours:** `df["encounter_id"].is_unique` (True) and `df["patient_nbr"].value_counts()`.
+**Other ways:**
+- A. `df["encounter_id"].duplicated().sum()` (0) and `df.duplicated().sum()` (0 fully repeated rows): counts instead of True/False; same answer.
+- B. `df["patient_nbr"].nunique()` (71,518): shorter for the number of patients, but we also need the stays per patient (repeats, maximum 40), and `value_counts()` gives all of it at once.
+- C. `df["patient_nbr"].duplicated(keep=False).sum()` (47,021): the stays of repeat patients in one line.
+
+**Verdict:** keep.
+
+### 5. Allowed values (§2.4)
+**Ours:** `value_counts(dropna=False)` to see every value, then `isin(allowed)` to flag anything else, for 3 columns in a loop.
+**Other ways:**
+- A. Only `value_counts()`, read by eye (our first plan): simpler, but nothing is flagged automatically, and §2.7 would need the label typed by hand.
+- B. `set(df["gender"]) - {"Female", "Male"}` → `{'Unknown/Invalid'}`: one line, but no counts.
+- C. A data contract (`pandera`): write the rules once (allowed values, `encounter_id` unique), then `schema.validate(df, lazy=True)` lists every break. Best when new data arrives regularly; an extra package and set-up for a one-time analysis.
+
+**Verdict:** keep. These checks are also what make the short function safe (see 10).
+
+> "For a one-time analysis I wrote the checks out. If this data arrived every month, I'd put the same rules in a data contract, so the pipeline stops when the data changes."
+
+### 6. Discharge codes (§2.5)
+**Ours:** read only the discharge table, then pick the codes by their labels.
+**Other ways:**
+- A. Type the codes: `DEATH = [11, 19, 20, 21]`, `HOSPICE = [13, 14]`. Two lines, and what most public analyses do. Risk: typed lists slip. One public notebook removes `[11, 13, 14, 19, 20, 26]`, calls 19, 20 and 26 "hospice" (19 and 20 are deaths, 26 is unknown) and misses 21. Here 21 and 26 have no stays, so its counts happen to be right.
+- B. Search the labels for "hospice" anywhere (`str.contains("hospice", case=False)`): finds 13, 14, 19, 20 and 21, mixing deaths into hospice. That is why we use "starts with".
+- C. Find the table by its header line instead of `skiprows=10, nrows=30`: no typed positions, but 3–4 more lines. The file never changes (fingerprint), and line 5 checks that no code is missing, so the typed positions are safe.
+
+**Verdict:** keep. The label lookup costs one short cell and removes the typing risk.
+
+### 7. Can they come back? (§2.6)
+**Ours:** `pd.crosstab(code, readmitted)`, then keep our 9 codes.
+**Other ways:**
+- A. `df.groupby([code, readmitted]).size().unstack(fill_value=0)`: the identical table, more code.
+- B. A crosstab per group with totals (codes mapped to died / hospice / unknown, `margins=True`): the 3-row table from the simpler notes; easier to present, but the per-code detail is gone and it needs one more line.
+- C. `normalize="index"`, shares instead of counts *(quick check)*: back within 30 days: died 0%, hospice 5.6%, unknown 11.8%. Unknown-destination stays come back about as often as all stays (11.4%), so they behave like ordinary stays, not like deaths: a good argument for keeping them.
+
+**Verdict:** keep (the brief asks to check the exact codes); use B's group totals when speaking.
+
+### 8. The list of problems (§2.7)
+**Ours:** a table built by code; the numbers in the text come from f-strings.
+**Other ways:**
+- A. A table typed in markdown: no code, but numbers typed by hand can go out of date.
+- B. One `print` per problem: simpler, but less tidy.
+
+**Suggested switch:** problem 3's count. Now `df["patient_nbr"].isin(stays_per_patient[repeat].index).sum()`; simpler: `stays_per_patient[repeat].sum()`, the same 47,021 already printed in §2.3.
+
+### 9. What is excluded, and what is counted (§3)
+**Ours:** remove death and hospice stays; count every stay.
+**Other ways:**
+- A. One stay per patient, the first (the original paper): 9.0% of 69,990 patients *(quick check)*. The paper did this because its regression model needs independent rows ("the observations could not be considered as statistically independent"). The brief's function asks for the "number of encounters", and we describe rather than model, so we count per stay.
+- B. Medicare's readmission measures (Medicare: US public insurance, mainly for people 65 and over) also leave out patients who left against medical advice, and a stay that is itself a readmission does not start a new 30-day count. The second needs dates, which we don't have; the first is question 4 in the note. *(quick check)*: also removing "left against medical advice" (code 7) keeps 11.4%; also removing transfers to another hospital (code 2) gives 11.3%.
+- C. Also remove the unknown destinations: 11.4% of 94,663 *(quick check)*, the same as now.
+
+**Verdict:** keep. It is what the brief asks, and the other reasonable exclusions move the overall rate by at most 0.1 point. The choice that really matters is stays versus patients (11.4% versus 9.0%).
+
+### 10. The function
+**Ours:** three steps: True/False per stay → group by age → count and average.
+**Other ways (same result, checked):**
+- A. Count with a crosstab, then divide: `t = pd.crosstab(df["age"], df["readmitted"])`, rate = `t["<30"] / t.sum(axis=1)`. Reads like the formula "back within 30 days ÷ all stays"; a few more lines.
+- B. Named aggregation on the whole table (`df.assign(...).groupby("age", as_index=False).agg(encounters=("r", "size"), ...)`, then rename): longer.
+- C. SQL, e.g. with DuckDB: `SELECT age AS age_bracket, COUNT(*) AS encounters, AVG(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) AS readmission_rate_30d FROM df GROUP BY age ORDER BY age`. Very readable for people who know SQL; an extra package. (Not run here.)
+- D. A small function inside: `.agg(encounters="size", readmission_rate_30d=lambda s: (s == "<30").mean())`: reads naturally, but slower and harder for beginners.
+
+**Known limits of ours (tested):** a label like `[100-110)` would sort wrong; a stay with no age is silently left out; an unexpected value like `YES` silently counts as "not back". None of these happens in this data: §2.4 proved it.
+**Verdict:** keep. It is the shortest of all the versions tested.
+
+### 11. The unit tests
+**Ours:** two tests: the exact table for 5 hand-made stays, and the age order.
+**Other ways (A–C were run and pass on our function):**
+- A. One test, many small cases (`@pytest.mark.parametrize`): e.g. all `NO` → 0.0, all `<30` → 1.0, `>30` and `<30` → 0.5. A compact way to add cases.
+- B. The example inside the function's description (a doctest, run with `pytest --doctest-modules`): the documentation is also a test. Long tables in a description get messy.
+- C. Random tables (property-based testing with `hypothesis`): generates many small tables and checks rules that must always hold: the stays add up to all rows, every rate is between 0 and 1, and rate × stays = the number of `<30`. Finds cases nobody thought of; an extra package, harder to explain.
+- D. A test on the real file (11.4%): ruled out by the brief (hand-made tables only).
+
+**Verdict:** keep. Our two tests cover the two rules that matter (what counts as a return, and the order), and each was shown to fail when its rule is broken. If asked about more: "With more time, I'd add random-table tests for the rules that must always hold."
+
+### 12. How the project is organized
+**Ours:** a notebook (the analysis with its results), the function in `src/`, the tests in `tests/`.
+**Other ways:**
+- A. One script, `analysis.py`: easy to review as text, but the results are not shown next to the code.
+- B. Everything in the notebook, function included: fewer files, but pytest can't run the tests and the function can't be reused.
+
+**Verdict:** keep: results visible, function reusable and tested.
+
+> "For each step I chose the shortest code that keeps the data correct, and I checked the alternatives: they give the same numbers, or they lose information, like the default loading that turns 'test not done' into missing. The choice that really matters is counting stays rather than patients, and there I followed the brief."
+
+**Sources:** the original paper (Strack et al. 2014, <https://pmc.ncbi.nlm.nih.gov/articles/PMC3996476/>); pandas `read_csv` (<https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html>); Medicare's heart-attack readmission measure (<https://www.qualityforum.org/Projects/a-b/All_Cause_Admissions_and_Readmissions/Measure_Worksheet_-_0505.aspx>); pandera (<https://pandera.readthedocs.io/>); a public notebook with typed codes (<https://kev9527.github.io/readmission_using_pipeline.html>).
