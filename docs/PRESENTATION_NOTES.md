@@ -218,6 +218,33 @@ The list of problems is built from the results (§2.7).
 5. `set(...) - set(...) or "none"`: the codes in the data that are not in the mapping file, so codes with no meaning. Line 4 only counts codes that are in the mapping; this checks the other direction. It prints "none": every code in the data has a meaning.
 6. `discharge`: shows the table: 30 codes, each with its label and number of stays.
 
+**Line 2, simpler: what the mapping file looks like**
+`IDS_mapping.csv` is not one table but three small tables, one under the other, separated by a line holding only a comma:
+
+```text
+ 1  admission_type_id,description          <- table 1: admission type
+ 2  1,Emergency
+ …
+ 9  8,Not Mapped
+10  ,                                      <- separator
+11  discharge_disposition_id,description   <- table 2: discharge (the one we need)
+12  1,Discharged to home
+ …
+29  18,NULL
+ …
+41  29,Discharged/transferred to a Critical Access Hospital (CAH).
+42  ,                                      <- separator
+43  admission_source_id,description        <- table 3: admission source
+ …
+```
+
+A plain `pd.read_csv` would read all three as one table, with the discharge codes mixed into the admission codes. So:
+- `skiprows=10`: skip lines 1–10. Line 11 is the first line read, and pandas uses it as the column names.
+- `nrows=30`: read the next 30 lines (12–41, the 30 discharge codes), then stop before the separator and table 3.
+- `keep_default_na=False`: line 29 has the word `NULL`, which pandas would read as missing. Switched off, it stays the text "NULL", so cell 2 can find code 18 by its label.
+
+The 10 and 30 come from looking at the file. The file never changes (its fingerprint is in `data/README.md`), and line 5 confirms that no code in the data is missing from the table.
+
 **What does cell 2 do, line by line?**
 1. `label = discharge["description"]`: a short name for the label column.
 2. `DEATH`: the codes whose label starts with "Expired" (died): 11, 19, 20, 21.
