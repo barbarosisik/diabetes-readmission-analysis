@@ -47,3 +47,5 @@ A hospital manager asks:
 
 - Timebox: about 60–90 minutes of focused work for the core tasks.
 - Language: free choice.
+- Deliverables: the code, the unit tests and a short written explanation of the approach and assumptions.
+- Reasonable assumptions are allowed if each one is documented clearly, with its reasoning. Not only the result matters, but also the approach, the structure of the solution and how data-quality problems are handled.

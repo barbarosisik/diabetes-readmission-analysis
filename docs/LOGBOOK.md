@@ -407,3 +407,185 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - None.
+
+---
+
+## Entry 009 · 2026-11-24 · Session 4, part 1: review walk-through and presentation notes
+
+**Branch:** `step-05-revisions`, created from `step-04-results` (which includes the project owner's notebook edit 2289ff8). Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The project owner is going through the notebook section by section (so far §1–§2.3) to be able to present it.
+
+### Decided
+
+- All revisions go on one branch, `step-05-revisions`.
+- The questions and answers are kept in `docs/PRESENTATION_NOTES.md`, to be removed before the project is shared.
+
+### Changed (file by file)
+
+- `docs/PRESENTATION_NOTES.md`: new; the questions so far, each with its simplest answer.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- `payer_code` is missing in the first 20,446 rows, not 20,445 as written in notebook §1, `data/README.md` and entry 004.
+
+### Planned next
+
+- Continue the walk-through from §2.4, collect the corrections, then make them on this branch.
+
+### Open questions
+
+- The weak spots in the data-quality list (problem 1's row count, problem 2, hospice, unknown discharge codes, codes 21 and 26, first-look problems left out, the automated review comment on `docs/plan.md`).
+- The 20,446 fix: correct the number, or drop it.
+
+---
+
+## Entry 010 · 2026-11-24 · Session 4, part 2: the full project description
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The project owner received the full project description and asked whether anything changes in the tasks or deliverables.
+- The walk-through reached §2.5.
+
+### Decided
+
+- Add the description's missing lines to `docs/PROJECT_BRIEF.md`, so the reference file is complete. Other options were logging only, or logging later with the corrections.
+- The wording stays neutral, as `AGENTS.md` section 2 requires.
+
+### Changed (file by file)
+
+- `docs/PROJECT_BRIEF.md`: two lines under "Scope": the deliverables, and that assumptions must be documented with their reasoning.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Unchanged: the question, the two files, the six columns, the four quirks, the four tasks, the timebox and the free choice of language.
+- New: the deliverables (the code, the unit tests and a short written explanation of the approach and assumptions); assumptions must be documented with their reasoning; the approach, the structure and the handling of data-quality problems matter, not only the result.
+- Nothing in the work has to change: the code is in the notebook and `src/readmission.py`, the tests in `tests/test_readmission.py`, the assumptions in `NOTE.md` and the approach in `NARRATIVE.md`.
+
+### Planned next
+
+- Continue the walk-through from §2.6. At `NOTE.md`, check that every assumption states its reason.
+- The corrections listed in entry 009 get entry 011.
+
+### Open questions
+
+- Those of entry 009, unchanged.
+
+---
+
+## Entry 011 · 2026-11-24 · Session 4, part 3: the short report
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The walk-through covered §2.5 to §3, the function and the unit tests. Each part, with the project owner's questions, is in `docs/PRESENTATION_NOTES.md`.
+- For every step, other ways of doing it were collected, run on the data or on small tables, and compared with ours (notes, section 13).
+- The project owner asked for the deliverables: a short report that explains only the choices that had a strong alternative, a PDF of the alternatives for their own use, and the best way to deliver the unit tests.
+
+### Decided
+
+- Problem 1's row count (100,723) stays as it is: it is correct, and its row already says that none of the missing values are in the six analysis columns (open question 1 of entry 009).
+- The short report is `NARRATIVE.md`, which `AGENTS.md` section 8 already defines as the short report of the work. It is rewritten to be short and to explain only the choices that had a real alternative.
+- The PDF of the alternatives is kept in `private/`, which git ignores.
+
+### Changed (file by file)
+
+- `NARRATIVE.md`: rewritten as a short report (from 1,214 to 865 words): the approach, the choices that had a real alternative, and the limitations. The "AI tools used" and "How to reproduce" sections are unchanged.
+- `README.md`: the status line and the file guide point to the short report.
+- `.gitignore`: ignores `private/`, for the project owner's own files.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Every alternative tried gave the same numbers as ours, or lost information. For example, pandas' default settings would turn the `None` values ("test not done") into missing: 84,748 of them in `A1Cresult`, as counted in notebook §1.
+- Apart from `?`, the only word in `diabetic_data.csv` that pandas reads as missing by default is `None`, and the file has no empty fields (checked with throw-away code).
+- On GitHub the repository is private, and `main` holds only the first README. All the work is on the step branches (pull requests #1–#5 and this branch).
+
+### Planned next
+
+- The project owner reviews the short report and answers the open questions below.
+- Then, on this branch: the corrections (next entry) and the chosen way to deliver the unit tests.
+- A presentation speech for the notebook and the code, given before the questions.
+- Before sharing: open the pull request for this branch, merge pull requests #1–#5 and this one into `main`, give the readers access to the repository (or send a copy), and remove `docs/PRESENTATION_NOTES.md`.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- Problem 3's count in §2.7: use `stays_per_patient[repeat].sum()` (the same 47,021, already printed in §2.3) instead of the longer expression?
+- How to deliver the unit tests: as now (the test file and `pytest`), also with a last notebook cell that runs them, or with an automatic run on GitHub?
+
+---
+
+## Entry 012 · 2026-11-24 · Session 4, part 4: the AI tools wording and the speech
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The readers want to see the project owner's own way of working. Outside ideas are fine, as long as the work is not copied as a whole.
+
+### Decided
+
+- The "AI tools used" section of `NARRATIVE.md` now says who did what: the assistant proposed options and drafted code and text; the project owner directed the work, made every decision and reviewed every line. For this section, this replaces entry 003's rule that mentions of AI tooling stay exactly as they are.
+- Problem 3's count in §2.7 stays as it is: there is no reason to change working code.
+- The phrase "as many public analyses do" in the short report stays.
+- The presentation speech for the notebook and the code is a full but brief speech, kept in `docs/PRESENTATION_NOTES.md`.
+
+### Changed (file by file)
+
+- `NARRATIVE.md`: the "AI tools used" section reworded.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Nothing new.
+
+### Planned next
+
+- The open questions below, then the corrections on this branch (next entry), the pull request for this branch, merging pull requests #1–#5 and this one into `main`, and giving the readers access.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- How to deliver the unit tests (entry 011).
+
+---
+
+## Entry 013 · 2026-11-24 · Session 4, part 5: everything merged into `main`
+
+**Branch:** `step-05-revisions`, then merged into `main` together with pull requests #1–#5.
+
+### Discussed
+
+- The project owner asked to merge everything into `main` and to prepare the files to send.
+
+### Decided
+
+- Pull requests #1–#5 and this branch are merged into `main` in order, each with a merge commit.
+- The files to send are the repository at `main`, without `docs/PRESENTATION_NOTES.md` (the project owner's own preparation notes).
+- The open questions below can still be applied afterwards, on a new branch.
+
+### Changed (file by file)
+
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- A fresh copy of this branch, without the presentation notes, reruns from scratch: with the pinned packages, every notebook output is identical to the committed one, and `pytest` reports 2 passed.
+
+### Planned next
+
+- The project owner sends the files.
+- The open questions below.
+
+### Open questions
+
+- Open questions 2–8 of entry 009.
+- How to deliver the unit tests (entry 011).
