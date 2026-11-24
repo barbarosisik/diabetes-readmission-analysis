@@ -405,3 +405,41 @@ What it means for §3:
 **Why:** this is the answer to the manager's question (brief task 2).
 
 > "After removing the 2,423 stays that ended in death or hospice, 11.4% of the remaining 99,343 stays were followed by a readmission within 30 days, about 1 in 9. By age, it is lowest under 20 and highest at 20–30 (14.3%); all other age groups are between about 10% and 13%."
+
+---
+
+## 11. The function: `src/readmission.py`
+
+**What is the function?** The code that turns stays into the table by age. It is in its own file so the notebook and the unit tests use the same code.
+
+**What does it do, line by line?**
+1. `import pandas as pd`: loads pandas; needed for `pd.DataFrame` in the next line.
+2. `def readmission_rate_by_age(df: pd.DataFrame) -> pd.DataFrame:`: creates the function, with the name the brief asks for. A table goes in, a table comes out (`: pd.DataFrame` and `-> pd.DataFrame` are only labels saying so).
+3. The text in `"""..."""`: a short description for readers. Only `<30` counts, and death and hospice stays must be removed before calling.
+4. `readmitted_30d = df["readmitted"] == "<30"`: True or False for each stay. `>30` and `NO` are False.
+5. `.groupby(df["age"])`: puts each True/False into its stay's age group.
+6. `.agg(encounters="size", readmission_rate_30d="mean")`: two numbers per group. `size` = how many stays; `mean` = the share of True = the rate. The names before `=` become the column names.
+7. `.reset_index(names="age_bracket")`: the age groups become a normal column called `age_bracket`.
+
+**Example** (the same 5 stays as in the first unit test):
+
+| age | readmitted | `<30`? |
+|---|---|---|
+| [0-10) | <30 | True |
+| [0-10) | NO | False |
+| [50-60) | <30 | True |
+| [50-60) | >30 | False |
+| [50-60) | NO | False |
+
+Output:
+
+| age_bracket | encounters | readmission_rate_30d |
+|---|---|---|
+| [0-10) | 2 | 1 of 2 = 0.5 |
+| [50-60) | 3 | 1 of 3 = 0.333 |
+
+**Age order:** `groupby` sorts the groups alphabetically. For these ten labels that is also age order, because each starts with a different digit after `[`.
+
+**Why:** it returns exactly the three columns the brief asks for: age bracket, number of encounters and 30-day readmission rate.
+
+> "The function marks each stay as 'back within 30 days' or not, groups the stays by age bracket, and gives for each group the number of stays and the share that came back within 30 days."
