@@ -1,4 +1,4 @@
-# diabetes-readmission-analysis
+# Hartwig Assessment: Diabetes Readmission Analysis
 
 Barbaros Isik · 24 November 2026
 
@@ -8,23 +8,22 @@ A hospital manager asks: *"What share of patients are readmitted within 30 days,
 
 **Answer:** 11.4% of stays are followed by a readmission within 30 days. The rate is lowest under 20 (1.9% at 0–10, 5.8% at 10–20) and highest at 20–30 (14.3%); all other age groups lie between 9.8% and 12.6%.
 
-My rule throughout: the least code that keeps the data correct. This report covers only the choices where another way would also have made good sense. The numbers are in [RESULTS.md](RESULTS.md), the assumptions in [NOTE.md](NOTE.md).
+The numbers are in [RESULTS.md](RESULTS.md).
 
 ## Resources used, and why
 
 - **The UCI dataset** named in the brief, and **the paper its authors published with it** (Strack et al., 2014), to see how they handled stays that ended in death or hospice care.
-- **Python, pandas, Jupyter and pytest:** widely known tools. The notebook reads from top to bottom, and pytest runs the unit tests.
-- **Git:** one branch per step, each reviewed before the next one began.
+- **I used: Python, pandas, Jupyter and pytest**. The notebook reads from top to bottom, and pytest runs the unit tests.
 
 ## Part 1: data and loading
 
-The raw files are committed unchanged, with their SHA-256 fingerprints, and the main file is loaded in one line:
+The main file is loaded:
 
 ```python
 pd.read_csv(path, na_values="?", keep_default_na=False, low_memory=False)
 ```
 
-The usual way (pandas' default settings, then replacing `?`) would be a mistake here: current pandas also reads the word `None` as missing, and in this file `None` means "test not done" for 84,748 A1C results (a blood test of average blood sugar).
+I thought that the usual way (pandas' default settings, then replacing `?`) would be a mistake here because; current pandas also reads the word `None` as missing, and in this file `None` means "test not done" for 84,748 A1C results (a blood test of average blood sugar).
 
 ## Part 2: data-quality problems (brief task 1)
 
