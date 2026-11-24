@@ -23,13 +23,13 @@ I load the main file with a single line:
 pd.read_csv(path, na_values="?", keep_default_na=False, low_memory=False)
 ```
 
-I chose not to do it the usual way (pandas' default settings, then replacing `?`), because current pandas also reads the word `None` as missing. In this file, `None` is a real answer: it means "test not done", and it appears in 84,748 A1C results (A1C is a blood test of average blood sugar). Reading only `?` as missing keeps those answers intact. `low_memory=False` simply makes pandas read each column in full before choosing its type, which avoids a mixed-type warning.
+I chose not to do it the usual way (pandas' default settings, then replacing `?`), because current pandas also reads the word `None` as missing. In this file, `None` means "test not done", and it appears in 84,748 A1C results (A1C is a blood test of average blood sugar). Reading only `?` as missing keeps those answers intact. `low_memory=False` simply makes pandas read each column in full before choosing its type, which avoids a mixed-type warning.
 
-## Part 2: data-quality problems (brief task 1)
+## Part 2: data-quality problems (briefs task 1)
 
 Before changing anything, I looked at the data with six checks that only read it: the size and column types, the missing values, whether rows are stays or patients, whether `age`, `gender` and `readmitted` hold only the expected values, what the discharge codes mean, and whether patients with those codes come back. Everything they found is collected in a table of eight problems, built by code. For each problem, the table shows how many rows it affects and whether it matters for the readmission question. For example, 3 stays have an unknown gender, which does not matter here because the table does not use gender; but 1,652 stays ended in death, which matters a lot, because those patients cannot be readmitted.
 
-One choice here deserves a word. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`), as many public analyses do. But typed lists slip easily, so I let the code read them from the mapping file by their labels ("Expired" and "Hospice"). It costs one short cell, and it makes the check itself part of the analysis.
+One choice here deserves attention. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`). But typed lists slip easily, so I let the code read them from the mapping file by their labels ("Expired" and "Hospice"). It costs one short cell, and it makes the check itself part of the analysis.
 
 ## Part 3: the function and its tests (brief tasks 2–3)
 
