@@ -14,7 +14,7 @@
 
 **Questions for the data owner**
 
-1. How is `readmitted` built: a return to any of the 130 hospitals, or only the same one? Does `NO` mean the patient was followed for the full 30 days? Does day 30 count as `<30`?
+1. If a patient is readmitted exactly 30 days after discharge, which `readmitted` label do they get?
 2. Can we get admission and discharge dates?
 3. What do discharge codes 18 ("NULL") and 25 ("Not Mapped") mean? Could they hide deaths?
 4. The question asks about patients, but the table counts stays, and one patient can have several. Should each patient count only once?
