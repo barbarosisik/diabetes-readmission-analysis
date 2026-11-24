@@ -354,6 +354,54 @@ What it means for §3:
 | 7 | Destination unknown | 4,680 | Yes: kept, but could hide deaths |
 | 8 | No dates | 101,766 | Yes: the `readmitted` flag has to be trusted |
 
+**Why does problem 1 touch 99% of stays?**
+100,723 of 101,766 stays have a `?` somewhere, but only in columns we don't use, such as `weight`. Our six columns have none, and row 1 says so. Kept as it is.
+
 **Why:** brief task 1: list the problems before changing anything. Each row says how many stays it touches and whether it changes the answer, which leads straight to §3.
 
 > "Before changing anything, I listed 8 data problems, each with how many stays it touches and whether it affects the answer. Three don't, because they are in columns I don't use. The other five shape the analysis: I count stays, not patients; I remove death and hospice stays; I keep the unknown destinations; and I trust the readmission flag, because there are no dates."
+
+---
+
+## 10. Notebook §3: 30-day readmission rate by age
+
+**What does the code do?** Three cells.
+
+1. Remove death and hospice stays:
+   - `excluded`: True for each stay with a death or hospice code (from §2.5).
+   - `eligible = df[~excluded]`: `~` flips True and False, so this keeps all other stays. `df` itself is not changed.
+   - Prints: Excluded 2,423 (1,652 + 771). Remaining 99,343.
+2. The table by age:
+   - `sys.path.append("../src")`: the function is in its own file, `src/readmission.py`, so the unit tests can use the same function. This line tells Python to look in that folder.
+   - `from readmission import readmission_rate_by_age`: loads the function.
+   - `rates = readmission_rate_by_age(eligible)`: for each age bracket, the number of stays and the share of them flagged `<30`.
+   - `rates.assign(...)`: shows the rate as a percent, like 14.3%. `rates` keeps the exact numbers.
+3. The overall rate:
+   - `(eligible['readmitted'] == '<30')`: True or False for each stay.
+   - `.mean()`: the average of True (1) and False (0) is the share of True. Example: True, False, False, False → 1 of 4 = 25%.
+   - Prints: 11.4% of 99,343 stays.
+
+**Result:**
+
+| Age | Stays | Back within 30 days |
+|---|---|---|
+| [0-10) | 160 | 1.9% |
+| [10-20) | 690 | 5.8% |
+| [20-30) | 1,649 | 14.3% |
+| [30-40) | 3,764 | 11.3% |
+| [40-50) | 9,607 | 10.7% |
+| [50-60) | 17,060 | 9.8% |
+| [60-70) | 22,059 | 11.3% |
+| [70-80) | 25,331 | 12.1% |
+| [80-90) | 16,434 | 12.6% |
+| [90-100) | 2,589 | 11.9% |
+| All | 99,343 | 11.4% |
+
+- Overall: about 1 in 9 stays is followed by a return within 30 days.
+- Lowest under 20, highest at 20–30; all other ages between 9.8% and 12.6%.
+- The two youngest groups are small (160 and 690 stays), so their rates are uncertain.
+- These are patterns, not causes: the table does not say that age causes returns.
+
+**Why:** this is the answer to the manager's question (brief task 2).
+
+> "After removing the 2,423 stays that ended in death or hospice, 11.4% of the remaining 99,343 stays were followed by a readmission within 30 days, about 1 in 9. By age, it is lowest under 20 and highest at 20–30 (14.3%); all other age groups are between about 10% and 13%."
