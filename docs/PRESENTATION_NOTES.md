@@ -325,3 +325,35 @@ What it means for §3:
 - Died: no one came back, as expected. Removed.
 - Hospice: a few came back, but they are not expected to. Removed, as the dataset's authors also did.
 - Unknown: 1,954 came back, so many were alive. Kept.
+
+---
+
+## 9. Notebook §2.7: the list of problems
+
+**What does the code do?** Three parts.
+
+1. Helper counts (first six lines):
+   - `discharge_code`: a short name for the discharge column.
+   - `death`, `hospice`, `unknown`: True/False for each stay: is its code in that group?
+   - `death_no`: death stays marked `NO` (1,652).
+   - `hospice_back`: hospice stays that came back (86); `hospice_30`: of those, within 30 days (43).
+   - `none_value`: True where either lab column says `None` (101,468). `|` means "or".
+2. `problems = pd.DataFrame([...])`: a table with 8 rows. Each row is (problem, rows affected, affects the question?). The texts use f-strings, so every number in them comes from code. `.sum()` on True/False counts the Trues.
+3. Tidying: `problems.index += 1` numbers the rows from 1; `.map("{:,}".format)` adds thousands commas.
+
+**Result:**
+
+| # | Problem | Stays | Affects our answer? |
+|---|---|---|---|
+| 1 | `?` means missing, in 7 columns (`weight` 97% empty) | 100,723 | No: none in our six columns |
+| 2 | pandas would read the real value `None` ("test not done") as missing | 101,468 | No: loaded correctly; columns not used |
+| 3 | One patient, many stays (16,773 of 71,518 patients have 2 or more) | 47,021 | Yes: we count stays, not patients |
+| 4 | gender `Unknown/Invalid` | 3 | No: gender is not used |
+| 5 | The patient died | 1,652 | Yes: removed in §3 |
+| 6 | The patient went to hospice | 771 | Yes: removed in §3, though 86 came back (43 within 30 days) |
+| 7 | Destination unknown | 4,680 | Yes: kept, but could hide deaths |
+| 8 | No dates | 101,766 | Yes: the `readmitted` flag has to be trusted |
+
+**Why:** brief task 1: list the problems before changing anything. Each row says how many stays it touches and whether it changes the answer, which leads straight to §3.
+
+> "Before changing anything, I listed 8 data problems, each with how many stays it touches and whether it affects the answer. Three don't, because they are in columns I don't use. The other five shape the analysis: I count stays, not patients; I remove death and hospice stays; I keep the unknown destinations; and I trust the readmission flag, because there are no dates."
