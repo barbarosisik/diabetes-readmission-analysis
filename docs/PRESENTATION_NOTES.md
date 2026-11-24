@@ -148,6 +148,11 @@ The list of problems is built from the results (§2.7).
 
 **My contribution:** the allowed-values check (§2.4) was my suggestion. A list of allowed values, plus counts that include missing values, catches both missing and unexpected labels (logbook entry 003).
 
+| | Check | Function | Why |
+|---|---|---|---|
+| Before | Odd values in the analysis columns | `value_counts()` on `gender`, `age`, `readmitted`, `discharge_disposition_id` | Finds `Unknown/Invalid`, the age brackets and the labels |
+| After | Allowed values in `age`, `gender`, `readmitted` | `value_counts(dropna=False)`, then `isin()` against the allowed values | Shows every value, missing included, and flags missing or unexpected labels such as `Unknown/Invalid` |
+
 ---
 
 ## 6. Notebook §2.4: allowed values
