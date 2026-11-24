@@ -178,6 +178,24 @@ The list of problems is built from the results (§2.7).
 - `readmitted` has only `NO`, `>30` and `<30`.
 - 3 stays have gender `Unknown/Invalid`.
 
+**The loop, simpler: one round, for `gender`**
+- `for col, values in allowed.items():` takes one pair from `allowed`: `col = "gender"`, `values = ["Female", "Male"]`. The loop then does the same for `age` and `readmitted`.
+- Line 1 prints every value with its count:
+  - `df[col]`: the gender column (101,766 values).
+  - `.value_counts(dropna=False)`: counts each value, missing included: Female 54,708, Male 47,055, Unknown/Invalid 3.
+  - `.sort_index()`: sorts by the value's name (puts the age brackets in order).
+  - `.to_string()`: plain text, without pandas' extra footer line.
+- Line 2 finds the values that are not allowed:
+  - `df[col].isin(values)`: True/False per stay; True if Female or Male.
+  - `~`: flips it, so True means not allowed. A missing value is also not allowed.
+  - `df.loc[that, col]`: keeps only those stays' gender values (3 values).
+  - `.value_counts(dropna=False)`: counts them: Unknown/Invalid 3.
+- Line 3 prints the result:
+  - `.to_dict()`: turns the counts into `{'Unknown/Invalid': 3}`.
+  - `or "none"`: if nothing was found, the dictionary is empty and "none" is printed instead.
+  - `f"...{col}..."`: puts the column name into the text.
+  - `"\n"`: an empty line before the next round.
+
 **Why:** the table groups by `age` and counts `readmitted`. A typo or missing label would create a wrong group or be counted wrongly.
 
 > "I checked that age, gender and readmitted hold only the expected values. Age has exactly the ten brackets, readmitted only NO, >30 and <30, and 3 stays have gender Unknown/Invalid."
