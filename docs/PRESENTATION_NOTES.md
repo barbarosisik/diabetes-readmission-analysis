@@ -128,30 +128,39 @@ There are 101,766 stays but only 71,518 patients. The table counts stays, as the
 
 ## 5. The data-quality checks: plan and changes
 
-**The six read-only checks** (`docs/plan.md` §5, agreed in logbook entry 003):
+**Initial plan** (before my comments):
 
-| Check | Function | Notebook |
+| Check | Function | Why |
 |---|---|---|
-| Size and column types | `df.shape`, `df.dtypes` | §2.1 |
-| Missing values (`?`) per column | `df.isna().sum()` | §2.2 |
-| One row per stay? Repeat patients? | `is_unique`, `value_counts()` | §2.3 |
-| Allowed values in `age`, `gender`, `readmitted` | `value_counts(dropna=False)`, then `isin()` | §2.4 |
-| Discharge codes and their meanings | `value_counts()` + `IDS_mapping.csv` | §2.5 |
-| Can those patients come back? | `pd.crosstab()` | §2.6 |
+| Size and column types | `df.shape`, `df.dtypes` | Confirms it is the expected file (101,766 × 50) |
+| Missing values (`?`) per column | `df.isna().sum()` | The brief's first quirk |
+| One row per stay? Repeat patients? | `df["encounter_id"].is_unique`, `df["patient_nbr"].value_counts()` | Stays are not patients |
+| Odd values in the analysis columns | `value_counts()` on `gender`, `age`, `readmitted`, `discharge_disposition_id` | Finds `Unknown/Invalid`, the age brackets and the labels |
+| What the discharge codes mean | `pd.read_csv("data/raw/IDS_mapping.csv", skiprows=10, nrows=30)` (just the discharge table) | Finds the death and hospice codes |
+| Can those patients come back? | `pd.crosstab(df["discharge_disposition_id"], df["readmitted"])` | Checks death and hospice stays against the outcome |
+
+**Final version** (`docs/plan.md` §5, agreed in logbook entry 003):
+
+| Check | Function | Why | Notebook |
+|---|---|---|---|
+| Size and column types | `df.shape`, `df.dtypes` | Confirms it is the expected file (101,766 × 50) and shows there are no date columns | §2.1 |
+| Missing values (`?`) per column | `df.isna().sum()` | The brief's first known quirk | §2.2 |
+| One row per stay? Repeat patients? | `df["encounter_id"].is_unique`, `df["patient_nbr"].value_counts()` | One patient can have many stays, so stays are not patients | §2.3 |
+| Allowed values in `age`, `gender`, `readmitted` | `value_counts(dropna=False)`, then `isin()` against the allowed values | Shows every value, missing included, and flags missing or unexpected labels such as `Unknown/Invalid` | §2.4 |
+| Discharge codes and what they mean | `value_counts()` on `discharge_disposition_id`, decoded with `pd.read_csv("../data/raw/IDS_mapping.csv", skiprows=10, nrows=30, keep_default_na=False)` | Finds the death, hospice and unknown codes. `keep_default_na=False` keeps code 18's label `NULL` visible | §2.5 |
+| Can those patients come back? | `pd.crosstab(df["discharge_disposition_id"], df["readmitted"])` | Checks death and hospice stays against the outcome | §2.6 |
 
 The list of problems is built from the results (§2.7).
 
-**How it changed:**
+**What changed:**
+- Row 1: also shows there are no date columns.
+- Row 4 (my suggestion, logbook entry 003): `dropna=False` counts missing values too, and `isin()` flags anything not on an allowed list. `discharge_disposition_id` moved to its own check (row 5).
+- Row 5: also finds the unknown codes, and `keep_default_na=False` keeps code 18's label `NULL` from being read as missing.
+
+**How the list of problems changed:**
 1. The first look found 18 problems (plan §3).
 2. The six checks gave 9.
 3. "Small age groups" was removed, because it is a sample-size warning, not a data fault, and needed a hand-picked cut-off. That left 8.
-
-**My contribution:** the allowed-values check (§2.4) was my suggestion. A list of allowed values, plus counts that include missing values, catches both missing and unexpected labels (logbook entry 003).
-
-| | Check | Function | Why |
-|---|---|---|---|
-| Before | Odd values in the analysis columns | `value_counts()` on `gender`, `age`, `readmitted`, `discharge_disposition_id` | Finds `Unknown/Invalid`, the age brackets and the labels |
-| After | Allowed values in `age`, `gender`, `readmitted` | `value_counts(dropna=False)`, then `isin()` against the allowed values | Shows every value, missing included, and flags missing or unexpected labels such as `Unknown/Invalid` |
 
 ---
 
