@@ -1,6 +1,6 @@
 # Project brief: 30-day hospital readmissions by age
 
-The original project description, kept for reference. How we will carry it out is in [plan.md](plan.md); medical terms are explained in [GLOSSARY.md](GLOSSARY.md).
+The original project description, kept for reference. Medical terms are explained in [GLOSSARY.md](GLOSSARY.md).
 
 ## Research question
 

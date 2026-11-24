@@ -21,3 +21,9 @@ Thumbs.db
 
 # The project owner's own files, not shared
 private/
+docs/LOGBOOK.md
+docs/PRESENTATION_NOTES.md
+docs/plan.md
+AGENTS.md
+CLAUDE.md
+pdf-drafts/
