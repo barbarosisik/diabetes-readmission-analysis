@@ -1,6 +1,3 @@
-# Intermediate data files (the raw data in data/raw/ are committed)
-data/interim/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -15,15 +12,3 @@ venv/
 Thumbs.db
 .vscode/
 .idea/
-
-# Local assistant settings (personal, not shared)
-.claude/settings.local.json
-
-# The project owner's own files, not shared
-private/
-docs/LOGBOOK.md
-docs/PRESENTATION_NOTES.md
-docs/plan.md
-AGENTS.md
-CLAUDE.md
-pdf-drafts/
