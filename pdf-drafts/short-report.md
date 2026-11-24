@@ -27,9 +27,9 @@ I chose not to do it the usual way (pandas' default settings, then replacing `?`
 
 ## Part 2: data-quality problems (briefs task 1)
 
-Before changing anything, I looked at the data with six checks that only read it: the size and column types, the missing values, whether rows are stays or patients, whether `age`, `gender` and `readmitted` hold only the expected values, what the discharge codes mean, and whether patients with those codes come back. Everything they found is collected in a table of eight problems, built by code. For each problem, the table shows how many rows it affects and whether it matters for the readmission question. For example, 3 stays have an unknown gender, which does not matter here because the table does not use gender; but 1,652 stays ended in death, which matters a lot, because those patients cannot be readmitted.
+Before changing anything, I looked at the data with six checks that only read it: the size and column types, the missing values, whether rows are stays or patients, whether `age`, `gender` and `readmitted` hold only the expected values, what the discharge codes mean, and whether patients with those codes come back. Everything they found is collected in a table of eight problems. For each problem, the table shows how many rows it affects and whether it matters for the readmission question. For example, 3 stays have an unknown gender, which does not matter here because the table does not use gender; but 1,652 stays ended in death, which matters a lot, because those patients cannot be readmitted.
 
-One choice here deserves attention. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`). But a list typed by hand can be wrong without anyone noticing: the labels of codes 19, 20 and 21 also contain the word "hospice", although those patients died, so a death code can easily end up in the hospice list. So I let the code read them from the mapping file by their labels ("Expired" and "Hospice"). This needs only one short cell of code, and anyone rerunning the notebook can see which label each code comes from.
+One choice here deserves attention. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`). But a list typed by hand can be wrong without anyone noticing: the labels of codes 19, 20 and 21 also contain the word "hospice", although those patients died, so a death code can easily end up in the hospice list. So I let the code read them from the mapping file by their labels ("Expired" and "Hospice").
 
 ## Part 3: the function and its tests (brief tasks 2–3)
 
@@ -37,11 +37,11 @@ The function `readmission_rate_by_age(df)` lives in its own file, [src/readmissi
 
 Two unit tests run the function on small hand-made tables where the right answer is known in advance. The first checks the counts and rates, including the rule that `>30` and `NO` count as stays but not as readmissions within 30 days. The second checks that the age brackets come out in age order. To make sure the tests would really catch a mistake in these rules, I broke each rule on purpose and checked that the matching test failed. `pytest` reports 2 passed.
 
-## Part 4: results and the note (brief task 4)
+## Part 4: results and the note (briefs task 4)
 
-In the notebook, I first removed the 2,423 stays that ended in death (1,652) or in hospice care (771). Hospice is comfort care for people expected to live only a few months. Then I ran the function on the remaining 99,343 stays. Three choices in this step had a reasonable alternative, so here is why I went the way I did:
+In the notebook, I first removed the 2,423 stays that ended in death (1,652) or in hospice care (771). Then I ran the function on the remaining 99,343 stays. Three choices in this step had a reasonable alternative, so here is why I went the way I did:
 
-- **Stays, not patients.** The manager asks about "patients", but the brief's function asks for the "number of encounters", so I count stays: a patient with three stays counts three times. Counting each patient once would follow the manager's wording more closely, and the original paper did exactly that, keeping each patient's first stay because its statistical model needed independent rows. I could not do the same reliably: the data have no dates, so there is no way to tell which of a patient's stays came first.
+- **Stays, not patients.** The manager asks about "patients", but the brief's function asks for the "number of encounters", so I counted stays as; a patient with three stays counts three times. Counting each patient once would follow the manager's wording more closely, and the datasets authors paper did exactly that, keeping each patient's first stay because its statistical model needed independent rows. I could not do the same reliably: the data have no dates, so there is no way to tell which of a patient's stays came first.
 - **Hospice stays are excluded,** even though 43 of them were followed by a readmission within 30 days. The brief lists these patients among those who "could never be readmitted", and the original paper removed them too, so I followed both and mention the 43 in the note.
 - **The 4,680 stays with an unknown destination are kept.** Removing them would have been the cautious choice, since some of them might hide deaths. But section 2.6 of the notebook shows that many of these stays were followed by a readmission, so those patients were clearly alive, and for the rest there is no way to tell. Removing them all would also remove many ordinary stays.
 
@@ -56,7 +56,7 @@ Since this was a one-time analysis, I wrote the checks out in the notebook. If t
 
 ## AI tools used
 
-- **Claude Code** (an AI coding assistant), my pair programmer: it proposed options, drafted code and text from my instructions, and helped check the data and prepare commit messages. I directed the work, made every decision and reviewed every line before it was merged.
+- **Claude Code Opus 5.5 and ChatGPT Sol 6.2** , Opus 5.5 as my pair programmer: it proposed options, drafted code and text from my instructions, and helped check the data and prepare commit messages. I directed the work, made every decision and reviewed every line before it was merged. Sol 6.2 as the research critic: Starting with Opus 5.5, I discussed and exchanged ideas to determine all the task approaches I had provided; then, by giving Sol 6.2 a new, context-free prompt, I tried to find easier ways and made changes accordingly.
 
 ## How to reproduce
 
