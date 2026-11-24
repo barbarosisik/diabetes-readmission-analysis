@@ -199,3 +199,42 @@ The list of problems is built from the results (§2.7).
 **Why:** the table groups by `age` and counts `readmitted`. A typo or missing label would create a wrong group or be counted wrongly.
 
 > "I checked that age, gender and readmitted hold only the expected values. Age has exactly the ten brackets, readmitted only NO, >30 and <30, and 3 stays have gender Unknown/Invalid."
+
+---
+
+## 7. Notebook §2.5: discharge codes and what they mean
+
+**What is the discharge code?**
+`discharge_disposition_id` is a code for where the patient went when leaving hospital: home, a care home, another hospital, hospice, or the patient died ("Expired" in hospital wording). *Hospice* is comfort care for people expected to live only a few months. The data hold only the number; what each number means is in `IDS_mapping.csv`.
+
+**What does cell 1 do, line by line?**
+1. `pd.set_option("display.max_colwidth", None)`: pandas cuts text longer than 50 characters when it shows a table. This turns that off, so the full labels are visible.
+2. `pd.read_csv(..., skiprows=10, nrows=30, keep_default_na=False)`: reads only the discharge table. The mapping file holds three code tables, one under the other: admission type (lines 1–9, then a separator line `,` on line 10), discharge (header on line 11, codes on lines 12–41) and admission source (from line 43).
+   - `skiprows=10`: skips the first table and the separator, so line 11 becomes the header.
+   - `nrows=30`: reads the 30 discharge codes and stops.
+   - `keep_default_na=False`: code 18's label is the word `NULL`, which pandas would otherwise read as missing (the same trap as `None`). Cell 2 could then not find code 18 by its label.
+3. `.set_index("discharge_disposition_id").sort_index()`: the code number becomes the row label, so codes can be looked up by number. Sorted 1 to 30 (in the file, 30 comes before 27).
+4. `discharge["stays"] = ...value_counts().reindex(discharge.index, fill_value=0)`: counts the stays for each code in the data and lines the counts up with the mapping's 30 codes. Codes nobody has (21, 26, 29, 30) show 0 instead of missing. It adds a column to the mapping table; `df` is not changed.
+5. `set(...) - set(...) or "none"`: the codes in the data that are not in the mapping file, so codes with no meaning. Line 4 only counts codes that are in the mapping; this checks the other direction. It prints "none": every code in the data has a meaning.
+6. `discharge`: shows the table: 30 codes, each with its label and number of stays.
+
+**What does cell 2 do, line by line?**
+1. `label = discharge["description"]`: a short name for the label column.
+2. `DEATH`: the codes whose label starts with "Expired" (died): 11, 19, 20, 21.
+3. `HOSPICE`: the codes whose label starts with "Hospice": 13, 14. "Starts with" matters: the labels of 19–21 (e.g. "Expired at home. Medicaid only, hospice.") also contain "hospice", but they are deaths. The "Medicaid only, hospice" part is only a billing note; Medicaid is US public health insurance for people with low incomes.
+4. `UNKNOWN`: the codes whose label is exactly one of the three "we don't know" labels: 18 (`NULL`), 25 (`Not Mapped`), 26 (`Unknown/Invalid`).
+5. `discharge.loc[DEATH + HOSPICE + UNKNOWN]`: `+` joins the three lists into one; `.loc` shows those 9 codes with their labels and stays.
+
+`.tolist()` turns each result into a plain list like `[11, 19, 20, 21]`, used again in §2.6, §2.7 and §3. With lists, `+` joins them (on pandas objects it would add the numbers), and they print as `[11, 19, 20, 21]` in the §2.7 table.
+
+**Result:**
+
+| Group | Codes | Stays |
+|---|---|---|
+| Death | 11, 19, 20, 21 | 1,642 + 8 + 2 + 0 = 1,652 |
+| Hospice | 13, 14 | 399 + 372 = 771 |
+| Unknown | 18, 25, 26 | 3,691 + 989 + 0 = 4,680 |
+
+**Why:** the brief says some codes mean death or hospice and "the exact codes must be checked in the mapping file". Looking them up by label means no code number is typed by hand: the code reads the meaning from the file.
+
+> "The discharge code says where the patient went after the stay. I read each code's meaning from the mapping file and picked out the death, hospice and unknown codes by their labels, not by typing numbers: 1,652 stays ended in death, 771 in hospice care, and 4,680 have an unknown destination."
