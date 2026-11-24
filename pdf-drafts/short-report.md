@@ -6,7 +6,7 @@ Barbaros Isik · 24 November 2026
 
 A hospital manager asks: *"What share of patients are readmitted within 30 days, and how does that differ by age group?"* To answer it, I used the public UCI dataset: 101,766 hospital stays of patients with diabetes, from 130 US hospitals between 1999 and 2008.
 
-**Answer:** 11.4% of hospital stays are followed by another admission within 30 days, roughly one in nine. By age, the rate is lowest under 20 (1.9% at ages 0–10 and 5.8% at 10–20) and highest at 20–30 (14.3%). All the other age groups sit close together, between 9.8% and 12.6%.
+**Answer:** 11.4% of hospital stays are followed by another admission within 30 days, roughly one in nine. By age, the rate is lowest under 20 (1.9% at ages 0–10 and 5.8% at 10–20) and highest at 20–30 (14.3%). All the other age groups are close to each other, between 9.8% and 12.6%.
 
 The numbers are in [RESULTS.md](RESULTS.md).
 
@@ -29,13 +29,13 @@ I chose not to do it the usual way (pandas' default settings, then replacing `?`
 
 Before changing anything, I looked at the data with six checks that only read it: the size and column types, the missing values, whether rows are stays or patients, whether `age`, `gender` and `readmitted` hold only the expected values, what the discharge codes mean, and whether patients with those codes come back. Everything they found is collected in a table of eight problems, built by code. For each problem, the table shows how many rows it affects and whether it matters for the readmission question. For example, 3 stays have an unknown gender, which does not matter here because the table does not use gender; but 1,652 stays ended in death, which matters a lot, because those patients cannot be readmitted.
 
-One choice here deserves attention. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`). But typed lists slip easily, so I let the code read them from the mapping file by their labels ("Expired" and "Hospice"). It costs one short cell, and it makes the check itself part of the analysis.
+One choice here deserves attention. The death and hospice discharge codes could simply have been typed in (`[11, 19, 20, 21]` and `[13, 14]`). But a list typed by hand can be wrong without anyone noticing: the labels of codes 19, 20 and 21 also contain the word "hospice", although those patients died, so a death code can easily end up in the hospice list. So I let the code read them from the mapping file by their labels ("Expired" and "Hospice"). This needs only one short cell of code, and anyone rerunning the notebook can see which label each code comes from.
 
 ## Part 3: the function and its tests (brief tasks 2–3)
 
 The function `readmission_rate_by_age(df)` lives in its own file, [src/readmission.py](src/readmission.py), so the notebook and the unit tests use exactly the same code. It is deliberately small, just three chained steps: it marks each stay as readmitted within 30 days (`<30`) or not, groups the stays by age bracket, and then counts the stays and takes the share that were marked. I tried a few longer versions as well; they all gave exactly the same table, so I kept the shortest one.
 
-Two unit tests run the function on small hand-made tables where the right answer is known in advance. The first checks the counts and rates, including the rule that `>30` and `NO` count as stays but not as readmissions within 30 days. The second checks that the age brackets come out in age order. To make sure the tests really guard these rules, I broke each rule on purpose and saw the matching test fail. `pytest` reports 2 passed.
+Two unit tests run the function on small hand-made tables where the right answer is known in advance. The first checks the counts and rates, including the rule that `>30` and `NO` count as stays but not as readmissions within 30 days. The second checks that the age brackets come out in age order. To make sure the tests would really catch a mistake in these rules, I broke each rule on purpose and checked that the matching test failed. `pytest` reports 2 passed.
 
 ## Part 4: results and the note (brief task 4)
 
