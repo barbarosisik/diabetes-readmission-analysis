@@ -440,3 +440,39 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 
 - The weak spots in the data-quality list (problem 1's row count, problem 2, hospice, unknown discharge codes, codes 21 and 26, first-look problems left out, the automated review comment on `docs/plan.md`).
 - The 20,446 fix: correct the number, or drop it.
+
+---
+
+## Entry 010 · 2026-11-24 · Session 4, part 2: the full project description
+
+**Branch:** `step-05-revisions`. Pull requests #1–#5 are not merged yet.
+
+### Discussed
+
+- The project owner received the full project description and asked whether anything changes in the tasks or deliverables.
+- The walk-through reached §2.5.
+
+### Decided
+
+- Add the description's missing lines to `docs/PROJECT_BRIEF.md`, so the reference file is complete. Other options were logging only, or logging later with the corrections.
+- The wording stays neutral, as `AGENTS.md` section 2 requires.
+
+### Changed (file by file)
+
+- `docs/PROJECT_BRIEF.md`: two lines under "Scope": the deliverables, and that assumptions must be documented with their reasoning.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Unchanged: the question, the two files, the six columns, the four quirks, the four tasks, the timebox and the free choice of language.
+- New: the deliverables (the code, the unit tests and a short written explanation of the approach and assumptions); assumptions must be documented with their reasoning; the approach, the structure and the handling of data-quality problems matter, not only the result.
+- Nothing in the work has to change: the code is in the notebook and `src/readmission.py`, the tests in `tests/test_readmission.py`, the assumptions in `NOTE.md` and the approach in `NARRATIVE.md`.
+
+### Planned next
+
+- Continue the walk-through from §2.6. At `NOTE.md`, check that every assumption states its reason.
+- The corrections listed in entry 009 get entry 011.
+
+### Open questions
+
+- Those of entry 009, unchanged.
