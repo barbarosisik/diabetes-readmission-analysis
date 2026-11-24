@@ -299,3 +299,29 @@ The 10 and 30 come from looking at the file. The file never changes (its fingerp
 **Why:** the brief says these patients "could never be readmitted". This checks that against the data: true for death, not quite true for hospice, and not true for many unknown-destination stays.
 
 > "All death stays are marked NO, as they should be. Hospice patients did sometimes come back: 86 of 771, 43 within 30 days. And at least 1,954 of the 4,680 unknown-destination stays were followed by a return, so many of those patients were alive."
+
+**Simpler version**
+
+The question: the brief says patients who died or went to hospice "could never be readmitted". Is that true in the data?
+
+1. `pd.crosstab(...)` makes a counting table: one row per discharge code, one column per outcome (`<30`, `>30`, `NO`). Each box is the number of stays with that code and that outcome. Example with 3 stays, (11, NO), (13, <30) and (13, NO):
+
+   | code | <30 | >30 | NO |
+   |---|---|---|---|
+   | 11 | 0 | 0 | 1 |
+   | 13 | 1 | 0 | 1 |
+
+2. `.reindex(...)` keeps only the 9 codes we care about (death, hospice, unknown). Codes 21 and 26 have no stays, so they get a row of zeros.
+
+What we got (the notebook's rows added up per group):
+
+| Group | Stays | Back within 30 days | Back later | Never back |
+|---|---|---|---|---|
+| Died | 1,652 | 0 | 0 | 1,652 |
+| Hospice | 771 | 43 | 43 | 685 |
+| Unknown | 4,680 | 551 | 1,403 | 2,726 |
+
+What it means for §3:
+- Died: no one came back, as expected. Removed.
+- Hospice: a few came back, but they are not expected to. Removed, as the dataset's authors also did.
+- Unknown: 1,954 came back, so many were alive. Kept.
