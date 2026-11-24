@@ -208,3 +208,43 @@ A strict, append-only record of everything discussed, decided, changed and plann
 
 - Step 3: the code layout (`src/` file) and whether `reports/` is needed.
 - Step 3: the analysis choices (counting unit, exclusions, gender, small age groups).
+
+---
+
+## Entry 004 · 2026-11-23 · Session 3, part 2: Step 1, data and loading
+
+**Branch:** `step-01-data-loading`, created from `step-00-project-setup` because Step 0 was not merged yet. Merge Step 0 first; this pull request then shows only the Step 1 changes. Not yet merged.
+
+### Discussed
+
+- The project owner asked to start brief task 1 and to put everything where it was planned.
+
+### Decided
+
+- The raw data are committed on this branch, as planned for Step 1.
+- `requirements.txt` pins only the two packages the work needs: pandas and Jupyter.
+- `low_memory=False` is added to the loading line, to remove a mixed-type warning (see Found). The rule itself is unchanged: only `?` is read as missing.
+
+### Changed (file by file)
+
+- `data/raw/diabetic_data.csv`, `data/raw/IDS_mapping.csv`: the raw data, committed unchanged from the UCI zip file.
+- `data/README.md`: source, CC BY 4.0 credit, SHA-256 fingerprints and how to load the files.
+- `.gitignore`: no longer ignores `data/raw/` and `*.zip`.
+- `requirements.txt`: pandas 3.1.1 and Jupyter 1.1.1, with exact versions.
+- `notebooks/analysis.ipynb`: new notebook with the title, the question and section 1, "Load the data".
+- `NARRATIVE.md`: first version, covering the set-up, the data and the loading.
+- `README.md`: status "Step 1 of 4", file guide, data section and how to run.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- The notebook loads 101,766 rows × 50 columns. `None` survives in `A1Cresult` as a real value (84,748 rows).
+- `payer_code` is missing in the first 20,445 rows. pandas reads large files in chunks and guessed a different type for that first chunk, so it warned about mixed types. With `low_memory=False` it reads the whole file first; the warning is gone and the column is text.
+
+### Planned next
+
+- Step 2 (`step-02-data-quality`): the task 1 checks and the problem list in the notebook.
+
+### Open questions
+
+- None new. The Step 3 questions in entry 003 remain.

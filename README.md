@@ -6,12 +6,15 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 
 ## Status
 
-**Step 0 of 4 (project set-up).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
+**Step 1 of 4 (data and loading).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
 
 ## Where to find what
 
 | File | What it is |
 |---|---|
+| [notebooks/analysis.ipynb](notebooks/analysis.ipynb) | The analysis, in one notebook (so far: loading the data) |
+| [NARRATIVE.md](NARRATIVE.md) | A short report of the work: what was done, how and why |
+| [data/README.md](data/README.md) | Source, license credit and fingerprints of the raw data |
 | [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | The research question, the data and the tasks |
 | [docs/plan.md](docs/plan.md) | What the question really asks, what the data look like, and the step-by-step plan |
 | [AGENTS.md](AGENTS.md) | Working rules: branches, commit messages, explanations, data handling |
@@ -22,11 +25,20 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 
 The data come from the UCI Machine Learning Repository under the CC BY 4.0 license:
 <https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008>.
-The two raw files will be committed unchanged to `data/raw/` in Step 1, with their source, license credit and SHA-256 fingerprints in `data/README.md`.
+The two raw files are in `data/raw/`, unchanged. Their source, license credit and SHA-256 fingerprints are in [data/README.md](data/README.md).
 
 ## How to run
 
-Coming in Step 1.
+Needs Python 3.12 or newer.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+jupyter nbconvert --to notebook --execute --inplace notebooks/analysis.ipynb
+```
+
+The last line reruns the whole notebook and saves its outputs. To read it interactively instead, run `jupyter notebook notebooks/analysis.ipynb`.
 
 ## Citation
 
