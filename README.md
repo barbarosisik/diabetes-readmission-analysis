@@ -6,13 +6,15 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 
 ## Status
 
-**Step 3 of 4 (function and unit tests).** See [docs/plan.md](docs/plan.md) for the full plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for progress.
+**Done (Step 4 of 4).** The findings are in [RESULTS.md](RESULTS.md) and the note in [NOTE.md](NOTE.md). See [docs/plan.md](docs/plan.md) for the plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for the record of the work.
 
 ## Where to find what
 
 | File | What it is |
 |---|---|
-| [notebooks/analysis.ipynb](notebooks/analysis.ipynb) | The analysis, in one notebook (so far: loading the data and the data-quality list) |
+| [RESULTS.md](RESULTS.md) | The findings, task by task |
+| [NOTE.md](NOTE.md) | The note: assumptions, what was excluded and why, questions for the data owner |
+| [notebooks/analysis.ipynb](notebooks/analysis.ipynb) | The analysis, in one notebook: loading, data-quality list, results |
 | [src/readmission.py](src/readmission.py) | The function `readmission_rate_by_age(df)` |
 | [tests/test_readmission.py](tests/test_readmission.py) | Two unit tests on small hand-made tables |
 | [NARRATIVE.md](NARRATIVE.md) | A short report of the work: what was done, how and why |

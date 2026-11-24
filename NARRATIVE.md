@@ -4,7 +4,7 @@ Barbaros Isik · 23 November 2026
 
 ## Overview
 
-I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). So far, the project is set up, the data load correctly, the data-quality problems are listed, and the function and its tests are written.
+I answer one question from a hospital manager: what share of patients with diabetes are readmitted to hospital within 30 days of leaving, and how does that differ by age group? I use a public dataset of 101,766 hospital stays from 130 US hospitals (1999–2008). Result: 11.4% of stays are followed by a readmission within 30 days. By age, the rate ranges from 1.9% (ages 0–10) to 14.3% (ages 20–30).
 
 ## Resources used, and why
 
@@ -47,16 +47,31 @@ I answer one question from a hospital manager: what share of patients with diabe
   - No linter and no automatic test run on GitHub: the brief does not ask for them.
 - **Output:** `src/readmission.py` and `tests/test_readmission.py`; `pytest` passes (2 tests).
 
+## Part 4: results, note and results file (brief task 4)
+
+- **Input:** the loaded data, the discharge codes from part 2 and the function from part 3.
+- **Process:** in the notebook, I excluded the death and hospice stays, ran the function on the remaining stays and computed the overall rate. Then I wrote the note and the results file.
+- **Decisions and why:**
+  - I excluded the 2,423 stays that ended in death or hospice care, because those patients cannot come back, or are not expected to. Their codes are looked up by label in the mapping file, not typed by hand.
+  - I kept the 4,680 stays with an unknown discharge destination and the 3 `Unknown/Invalid` gender stays: I cannot tell whether those patients died, and gender is not used. Both are listed as problems.
+  - I count per stay, as the brief asks ("number of encounters").
+  - The exclusion is done in the notebook, before calling the function, so the function does exactly what the brief asks.
+  - One very simple results file, `RESULTS.md`, holds the findings task by task, so they can be read in one place.
+  - Numbers in the documents are copied from the notebook's outputs, never worked out by hand.
+- **Output:** notebook section 3 (the table and the overall rate), `NOTE.md` and `RESULTS.md`.
+
 ## Limitations
 
 - The data have no dates, so the order of a patient's stays and the exact 30-day window cannot be checked.
 - The readmission flag was computed by the data's authors from the full hospital database, so I have to trust it.
 - Readmissions to hospitals outside the 130 are not recorded, so the true rates are probably somewhat higher.
 - 4,680 stays have an unknown discharge destination; some of them may have ended in death.
+- The two youngest age groups are small (160 and 690 stays), so their rates are uncertain.
+- Counting per stay means that patients with many stays weigh more.
 
 ## AI tools used
 
-- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the code (notebook, function and tests) and prepare commit messages. I reviewed and approved every step before it was merged.
+- **Claude Code** (an AI coding assistant): helped write the plan and documents, download and check the data, write the code (notebook, function and tests), draft the note and the results file, and prepare commit messages. I reviewed and approved every step before it was merged.
 
 ## How to reproduce
 

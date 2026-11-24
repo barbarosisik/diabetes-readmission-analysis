@@ -368,3 +368,42 @@ All counts come from the notebook and confirm the first look in `docs/plan.md`, 
 ### Open questions
 
 - None.
+
+---
+
+## Entry 008 · 2026-11-23 · Session 3, part 6: Step 4, results, note and results file (brief task 4)
+
+**Branch:** `step-04-results`, created from `step-03-readmission-function` because the earlier steps were not merged yet. Merge pull requests #1–#4 first. Not yet merged.
+
+### Discussed
+
+- Nothing new; the decisions are in entry 006.
+
+### Decided
+
+- Nothing new. The exclusion decided in entry 006 is applied here: stays that ended in death or hospice care are removed before the function is called.
+
+### Changed (file by file)
+
+- `notebooks/analysis.ipynb`: new section 3: the exclusion, the table by age and the overall rate.
+- `RESULTS.md`: new; the findings, task by task.
+- `NOTE.md`: new; assumptions, what was excluded and why, and questions for the data owner (233 words).
+- `README.md`: status "Done", file guide with the results file and the note.
+- `NARRATIVE.md`: new part 4 with the exclusion and results-file decisions; overview and limitations updated.
+- `docs/plan.md`: status line.
+- `docs/LOGBOOK.md`: this entry.
+
+### Found
+
+- Excluded: 2,423 stays (death or hospice); 99,343 remain.
+- The overall 30-day readmission rate is 11.4%. By age, it ranges from 1.9% (ages 0–10, 160 stays) to 14.3% (ages 20–30); all other groups are between 9.8% and 12.6%.
+- These match the first look in `docs/plan.md`, section 1.3, column B.
+
+### Planned next
+
+- The project owner reviews and merges pull requests #1–#5, in order.
+- Walk the project owner through every step before the presentation.
+
+### Open questions
+
+- None.
