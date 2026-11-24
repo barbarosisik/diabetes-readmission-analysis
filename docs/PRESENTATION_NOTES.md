@@ -591,3 +591,40 @@ Every "same result" below was checked, on the real data or on small tables. Numb
 > "For each step I chose the shortest code that keeps the data correct, and I checked the alternatives: they give the same numbers, or they lose information, like the default loading that turns 'test not done' into missing. The choice that really matters is counting stays rather than patients, and there I followed the brief."
 
 **Sources:** the original paper (Strack et al. 2014, <https://pmc.ncbi.nlm.nih.gov/articles/PMC3996476/>); pandas `read_csv` (<https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html>); Medicare's heart-attack readmission measure (<https://www.qualityforum.org/Projects/a-b/All_Cause_Admissions_and_Readmissions/Measure_Worksheet_-_0505.aspx>); pandera (<https://pandera.readthedocs.io/>); a public notebook with typed codes (<https://kev9527.github.io/readmission_using_pipeline.html>).
+
+---
+
+## 14. Keep for the presentation
+
+**Which original paper?**
+Strack, B., DeShazo, J. P., Gennings, C., Olmo, J. L., Ventura, S., Cios, K. J., & Clore, J. N. (2014). *Impact of HbA1c measurement on hospital readmission rates: analysis of 70,000 clinical database patient records.* BioMed Research International, 2014, 781670. <https://doi.org/10.1155/2014/781670>. It was written by the dataset's own authors and published with the dataset.
+
+> "The original paper kept each patient's first stay, removed death and hospice stays, and counted `<30` against everything else. We do the same, except that we count every stay, because the brief asks for the 'number of encounters'."
+
+**Loading: one pass (ours), or read and then replace?**
+
+| Goal | Code |
+|---|---|
+| Only `?` is missing; every other word is real data | `pd.read_csv(path, na_values="?", keep_default_na=False)` (ours) |
+| `?` and pandas' usual missing words are all missing | `pd.read_csv(path, na_values="?")` |
+| Read, then replace `?` | `pd.read_csv(path).replace("?", np.nan)`: never needed; one of the two above does it in one pass |
+
+- Ours turns `?` into missing while reading, in one pass. It is faster: 0.39 s against 0.56 s on this file *(quick check)*. Memory use is about the same.
+- The difference in meaning: with `keep_default_na=False`, pandas' usual missing words (`NA`, `N/A`, `NULL`, `null`, `NaN`, an empty field, …) are read as text. Checked on our file *(quick check)*: the only one of those words in it is `None` (181,168 cells, in `max_glu_serum` and `A1Cresult`), and there are no empty fields. In current pandas, `None` is on the usual list, but here it is a real answer ("test not done"). So for this file only ours is right: the other two turn 84,748 A1C results into missing.
+- `low_memory=False` is a separate matter. pandas then chooses each column's type after reading the whole column, not piece by piece. Without it, pandas warns about mixed types (a `DtypeWarning`) in `payer_code`.
+
+**Why `df.shape` and `df.dtypes`, and not `df.info()`?**
+> "`df.info()` would do the same job; I wanted the size on one line."
+
+`df.info()` prints 57 lines (one per column, plus a header and the memory use) and mixes in the non-missing counts, which §2.2 shows more clearly as missing counts. Ours prints the size on one clean line, then the types.
+
+**For the notebook speech, before the questions:**
+> "For a one-time analysis I wrote the checks out. If this data arrived every month, I'd put the same rules in a data contract, so the pipeline stops when the data changes."
+
+**Why the discharge codes are not typed by hand:**
+> "`DEATH = [11, 19, 20, 21]`, `HOSPICE = [13, 14]`. Two lines, and it's what most public analyses do. The risk is that typed lists slip. One public notebook removes `[11, 13, 14, 19, 20, 26]`. It calls 19, 20 and 26 'hospice', but 19 and 20 are deaths and 26 is unknown, and it misses 21. In this data, 21 and 26 have no stays, so its counts happen to come out right."
+
+**The general rule:**
+> "I always tried to do with less code, so I always went for the least code approach for most of the cases."
+
+**To do, to finalize:** a presentation speech for the notebook and the code, given before the questions. It uses the lines above.
