@@ -6,7 +6,7 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 
 ## Status
 
-**Done (Step 4 of 4).** The findings are in [RESULTS.md](RESULTS.md), the note in [NOTE.md](NOTE.md) and the short report in [NARRATIVE.md](NARRATIVE.md). See [docs/plan.md](docs/plan.md) for the plan and [docs/LOGBOOK.md](docs/LOGBOOK.md) for the record of the work.
+**Done (Step 4 of 4).** The findings are in [RESULTS.md](RESULTS.md), the note in [NOTE.md](NOTE.md) and the short report in [NARRATIVE.md](NARRATIVE.md).
 
 ## Where to find what
 
@@ -20,10 +20,7 @@ This repository analyzes the public UCI dataset *Diabetes 130-US hospitals for y
 | [NARRATIVE.md](NARRATIVE.md) | The short report: the approach, the choices that had a real alternative, and the limitations |
 | [data/README.md](data/README.md) | Source, license credit and fingerprints of the raw data |
 | [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | The research question, the data and the tasks |
-| [docs/plan.md](docs/plan.md) | What the question really asks, what the data look like, and the step-by-step plan |
-| [AGENTS.md](AGENTS.md) | Working rules: branches, commit messages, explanations, data handling |
 | [docs/GLOSSARY.md](docs/GLOSSARY.md) | Medical, hospital and data terms in plain words |
-| [docs/LOGBOOK.md](docs/LOGBOOK.md) | Strict record of everything discussed, decided and changed |
 
 ## Data
 
